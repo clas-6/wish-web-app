@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Wish - Wish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#F5F3EF] text-[#2E2E2E] font-sans min-h-screen">
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-black/5 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-lg font-bold tracking-wide text-[#2563eb]">Wish</a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="dashboard.html" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Dashboard</a>
+                    <button id="logout-btn" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Log out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="bg-white/90 rounded-3xl border border-[#E0D5C5] overflow-hidden">
+            <div class="px-8 py-6 bg-[#F9F5EE] border-b border-[#E0D5C5]/70">
+                <h1 class="text-xl font-semibold">Make a wish</h1>
+                <p class="text-sm text-[#7A7A7A] mt-1">Ask for a small amount of airtime or data you need.</p>
+            </div>
+            
+            <form id="create-wish-form" class="p-8 space-y-6">
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Type</label>
+                        <select id="type" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                            <option value="AIRTIME">Airtime</option>
+                            <option value="DATA">Data</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Network</label>
+                        <select id="network" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                            <option value="MTN">MTN</option>
+                            <option value="AIRTEL">Airtel</option>
+                            <option value="GLO">Glo</option>
+                            <option value="9MOBILE">9mobile</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Amount (₦)</label>
+                        <input type="number" id="amount" required min="100" step="50" placeholder="e.g. 1000" class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Phone number</label>
+                        <input type="tel" id="phone" required placeholder="080***5678" class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Category</label>
+                        <select id="category" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                            <option value="KINDNESS">Kindness</option>
+                            <option value="FESTIVE">Festive</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <p class="text-[11px] text-[#7A7A7A]">Keep it simple. Keep it honest.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Short reason (optional)</label>
+                    <textarea id="message" rows="3" maxlength="200" placeholder="A sentence or two about why you need this." class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none resize-none"></textarea>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-[#2563eb] text-white py-4 rounded-full text-sm font-medium hover:bg-[#1d4ed8] transition-colors">
+                        Submit wish
+                    </button>
+                    <p class="text-[11px] text-[#7A7A7A] mt-4 text-center">
+                        Your phone number stays hidden and is only used for fulfillment.
+                    </p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/wishes.js"></script>
+</body>
+</html>

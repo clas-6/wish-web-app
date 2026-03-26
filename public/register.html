@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Wish</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#F5F3EF] flex flex-col min-h-screen text-[#2E2E2E]">
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-black/5">
+        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center">
+            <a href="index.html" class="text-lg font-bold tracking-wide text-[#2563eb]">Wish</a>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="bg-white/90 p-8 rounded-3xl border border-[#E0D5C5] w-full max-w-md">
+            <h1 class="text-2xl font-semibold mb-2 text-center">Create an account</h1>
+            <p class="text-sm text-[#7A7A7A] text-center mb-6">Join quietly. You can always stay anonymous to others.</p>
+            
+            <form id="register-form" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Email address</label>
+                    <input type="email" id="email" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-[#7A7A7A] mb-1">Confirm password</label>
+                    <input type="password" id="confirm-password" required class="w-full px-4 py-3 rounded-2xl border border-[#E0D5C5] bg-[#F9F5EE] focus:border-[#d9a441] transition outline-none">
+                </div>
+                <p class="text-[11px] text-[#7A7A7A] text-center">Your identity stays private.</p>
+                <button type="submit" class="w-full bg-[#2563eb] text-white py-3 rounded-full text-sm font-medium hover:bg-[#1d4ed8] transition-colors">
+                    Create account
+                </button>
+            </form>
+            
+            <p class="mt-8 text-center text-[#7A7A7A] text-sm">
+                Already have an account? 
+                <a href="login.html" class="font-medium underline underline-offset-4">Sign in</a>
+            </p>
+        </div>
+    </main>
+
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/auth.js"></script>
+</body>
+</html>

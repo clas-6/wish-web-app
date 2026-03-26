@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Helper function to check if user is the owner
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // Wishes collection
+    match /wishes/{wishId} {
+      // Anyone authenticated can read OPEN wishes
+      allow read: if isAuthenticated() && (resource == null || resource.data.status == 'OPEN' || isOwner(resource.data.uid));
+      
+      // Users can create wishes
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid;
+      
+      // Only owners can update their own wishes (and only if not fulfilled)
+      // Note: Status updates for fulfillment should be handled by Cloud Functions (Admin SDK)
+      allow update: if isAuthenticated() && isOwner(resource.data.uid) && resource.data.status != 'FULFILLED';
+    }
+
+    // Payments collection - Read-only for users involved
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (isOwner(resource.data.granter_uid) || isOwner(get(/databases/$(database)/documents/wishes/$(resource.data.wish_id)).data.uid));
+      allow create, update, delete: if false; // Only Cloud Functions
+    }
+
+    // VTU Logs - Only for Cloud Functions
+    match /vtu_logs/{logId} {
+      allow read, write: if false;
+    }
+  }
+}

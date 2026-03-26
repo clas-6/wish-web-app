@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wish - Micro-Telecom Funding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-[#F5F3EF] text-[#2E2E2E] font-sans">
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-black/5 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <a href="index.html" class="text-lg font-bold tracking-wide text-[#2563eb]">Wish</a>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="browse.html" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Browse Wishes</a>
+                    <div id="auth-links" class="flex items-center space-x-4">
+                        <a href="login.html" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Login</a>
+                        <a href="register.html" class="text-sm px-4 py-2 rounded-full border border-[#E0D5C5] text-[#2E2E2E] hover:bg-white transition">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="min-h-[calc(100vh-4rem)]">
+        <section class="py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#eff6ff] border border-[#bfdbfe] mx-auto">
+                    <span class="text-xs tracking-[0.18em] uppercase text-[#2563eb] font-semibold">Wish</span>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-semibold leading-snug">
+                    A quiet place for kindness.
+                </h1>
+                <p class="text-base md:text-lg text-[#7A7A7A] max-w-2xl mx-auto">
+                    A small, gentle space where people can ask for a little help with airtime or data, and strangers can give without being seen.
+                </p>
+                <div class="flex justify-center">
+                    <a href="browse.html" class="px-8 py-3 rounded-full bg-[#D9A441] text-sm font-medium text-white hover:bg-[#b38633] transition-colors">
+                        Continue
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 border-t border-[#E0D5C5]/60">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+                <p class="text-lg leading-relaxed">
+                    Here, wishes are small.<br>
+                    Giving is anonymous.<br>
+                    Kindness is quiet.
+                </p>
+                <div class="flex justify-center">
+                    <a href="browse.html" class="px-6 py-2 rounded-full border border-[#E0D5C5] text-sm text-[#2E2E2E] hover:bg-white transition-colors">
+                        Continue
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 border-t border-[#E0D5C5]/60">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12 space-y-3">
+                    <h2 class="text-2xl font-semibold">How it works</h2>
+                    <p class="text-sm text-[#7A7A7A]">Three quiet steps from wish to kindness.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-10">
+                    <div class="text-center space-y-4">
+                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
+                            <span class="text-lg">✨</span>
+                        </div>
+                        <h3 class="text-base font-semibold">Make a wish</h3>
+                        <p class="text-sm text-[#7A7A7A]">Ask for a small amount of airtime or data you need.</p>
+                    </div>
+                    <div class="text-center space-y-4">
+                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
+                            <span class="text-lg">🤲</span>
+                        </div>
+                        <h3 class="text-base font-semibold">A stranger grants it</h3>
+                        <p class="text-sm text-[#7A7A7A]">Someone chooses your wish and pays for it quietly.</p>
+                    </div>
+                    <div class="text-center space-y-4">
+                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
+                            <span class="text-lg">🌙</span>
+                        </div>
+                        <h3 class="text-base font-semibold">No one knows who gave</h3>
+                        <p class="text-sm text-[#7A7A7A]">You receive what you need, and they stay anonymous.</p>
+                    </div>
+                </div>
+                <div class="mt-10 flex justify-center">
+                    <a href="login.html" class="px-8 py-3 rounded-full bg-[#2563eb] text-sm font-medium text-white hover:bg-[#1d4ed8] transition-colors">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="featured-wishes" class="py-18 border-t border-[#E0D5C5]/60">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+                    <div class="space-y-2">
+                        <h2 class="text-xl font-semibold">Some quiet wishes</h2>
+                        <p class="text-sm text-[#7A7A7A]">A gentle selection of active wishes from the community.</p>
+                    </div>
+                    <a href="browse.html" class="text-sm font-medium text-[#2E2E2E] underline-offset-4 hover:underline">
+                        View all wishes
+                    </a>
+                </div>
+                <div id="wishes-container" class="grid md:grid-cols-3 gap-6">
+                    <div class="animate-pulse bg-white rounded-2xl p-6 border border-[#E0D5C5]/70">
+                        <div class="h-4 bg-[#E9E0D0] rounded w-1/4 mb-4"></div>
+                        <div class="h-7 bg-[#E9E0D0] rounded w-3/4 mb-4"></div>
+                        <div class="h-4 bg-[#E9E0D0] rounded w-full mb-2"></div>
+                        <div class="h-4 bg-[#E9E0D0] rounded w-5/6"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white/80 border-t border-black/5 py-10 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm text-[#7A7A7A]">&copy; 2026 Wish. A quiet place for kindness.</p>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/wishes.js"></script>
+</body>
+</html>
