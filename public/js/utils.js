@@ -38,4 +38,32 @@ export const showAlert = (message, type = 'info') => {
     alert(`${type.toUpperCase()}: ${message}`);
 };
 
+
+// ====================== THEME MANAGEMENT ======================
+export const initTheme = () => {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+};
+
+export const toggleTheme = () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon(newTheme);
+};
+
+const updateThemeIcon = (theme) => {
+    const icon = document.querySelector('#theme-toggle i');
+    if (!icon) return;
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+};
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+    initTheme();
+});
+
 export { auth, db, functions, httpsCallable, onAuthStateChanged, signOut };

@@ -3,130 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wish - Micro-Telecom Funding</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>WISH - Spread Kindness</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="WISH - Spread Kindness Anonymously">
+    <meta name="description" content="A quiet, anonymous platform to request or grant small airtime and data needs in Nigeria. Spread kindness, one wish at a time.">
+    <meta name="theme-color" content="#1e3a8a">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://wish-app.web.app/">
+    <meta property="og:title" content="WISH - Spread Kindness Anonymously">
+    <meta property="og:description" content="Request or grant small airtime and data needs quietly. Simple, honest, and kind.">
+    <meta property="og:image" content="https://wish-app.web.app/assets/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://wish-app.web.app/">
+    <meta property="twitter:title" content="WISH - Spread Kindness Anonymously">
+    <meta property="twitter:description" content="Request or grant small airtime and data needs quietly. Simple, honest, and kind.">
+    <meta property="twitter:image" content="https://wish-app.web.app/assets/og-image.png">
+
+    <script src="https://cdn.tailwindcss.com"></script> 
     <link rel="stylesheet" href="css/style.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 </head>
-<body class="bg-[#F5F3EF] text-[#2E2E2E] font-sans">
-    <nav class="bg-white/80 backdrop-blur-sm border-b border-black/5 sticky top-0 z-50">
+    <body class="transition-colors duration-300">
+
+    <!-- Glassmorphism Navbar -->
+    <nav class="furni-card !rounded-none !border-t-0 !border-x-0 !shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center">
-                    <a href="index.html" class="text-lg font-bold tracking-wide text-[#2563eb]">Wish</a>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <div class="w-9 h-9 bg-[#FACC15] rounded-2xl flex items-center justify-center text-2xl shadow-inner">💛</div>
+                    <a href="index.html" class="brand-logo text-inherit">WISH</a>
                 </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="browse.html" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Browse Wishes</a>
-                    <div id="auth-links" class="flex items-center space-x-4">
-                        <a href="login.html" class="text-sm text-[#7A7A7A] hover:text-[#2E2E2E] transition">Login</a>
-                        <a href="register.html" class="text-sm px-4 py-2 rounded-full border border-[#E0D5C5] text-[#2E2E2E] hover:bg-white transition">Get Started</a>
-                    </div>
+                
+                <div class="hidden md:flex items-center space-x-8 text-sm">
+                    <a href="browse.html" class="hover:text-[#FACC15] transition">Browse Wishes</a>
+                    <a href="create-wish.html" class="hover:text-[#FACC15] transition">Post a Wish</a>
+                    <a href="dashboard.html" class="hover:text-[#FACC15] transition">My Impact</a>
+                </div>
+
+                <div id="auth-links" class="flex items-center gap-4">
+                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <a href="login.html" class="hidden xs:block text-sm hover:text-[#FACC15] transition">Login</a>
+                    <a href="register.html" 
+                       class="px-4 py-2 sm:px-5 sm:py-2.5 bg-accent text-primary-dark font-semibold rounded-xl sm:rounded-2xl text-xs sm:text-sm hover:opacity-90 transition">
+                        Get Started
+                    </a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <main class="min-h-[calc(100vh-4rem)]">
-        <section class="py-20">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#eff6ff] border border-[#bfdbfe] mx-auto">
-                    <span class="text-xs tracking-[0.18em] uppercase text-[#2563eb] font-semibold">Wish</span>
-                </div>
-                <h1 class="text-3xl md:text-4xl font-semibold leading-snug">
-                    A quiet place for kindness.
-                </h1>
-                <p class="text-base md:text-lg text-[#7A7A7A] max-w-2xl mx-auto">
-                    A small, gentle space where people can ask for a little help with airtime or data, and strangers can give without being seen.
-                </p>
-                <div class="flex justify-center">
-                    <a href="browse.html" class="px-8 py-3 rounded-full bg-[#D9A441] text-sm font-medium text-white hover:bg-[#b38633] transition-colors">
-                        Continue
-                    </a>
+    <main>
+       <!-- Hero Section -->
+<section class="min-h-[70vh] md:min-h-[80vh] flex items-center relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center relative z-10">
+        
+        <!-- Main Headline -->
+        <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight text-inherit">
+            Stay connected<br>with a <span class="text-accent">quiet wish</span>.
+        </h1>
+
+        <!-- Subtext -->
+        <p class="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl opacity-80 max-w-2xl mx-auto text-inherit">
+            Ask for or grant small airtime and data needs.<br>
+            Simple, honest and kind.
+        </p>
+
+        <!-- Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-10 sm:mt-12">
+            <a href="browse.html" 
+               class="px-8 py-4 sm:px-10 sm:py-5 bg-white text-primary-dark font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-white/90 transition-all">
+                Browse Wishes
+            </a>
+            <a href="create-wish.html" 
+               class="px-8 py-4 sm:px-10 sm:py-5 bg-transparent border-2 border-[var(--card-border)] text-inherit font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-white/10 transition-all">
+                Get Started
+            </a>
+        </div>
+
+        <!-- Trust line -->
+        <p class="mt-10 opacity-60 text-sm text-inherit">
+            Completely anonymous • Real kindness in Nigeria
+        </p>
+    </div>
+
+    <!-- Decorative soft blob (like in your image) -->
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-[var(--blob-color)] rounded-[60%] blur-3xl"></div>
+    <div class="absolute top-20 left-10 w-64 h-64 bg-[var(--blob-color)] rounded-[60%] blur-3xl opacity-50"></div>
+</section>
+
+        <!-- How it Works -->
+        <section class="py-12 sm:py-16 bg-white/10 backdrop-blur-lg border-t border-b border-white/20">
+            <div class="max-w-5xl mx-auto px-4">
+                <h2 class="text-center text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12">How WISH Works</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
+                        <div class="text-4xl mb-4">✨</div>
+                        <h3 class="font-semibold text-xl mb-2">Make a Wish</h3>
+                        <p class="opacity-70">Request a small amount of airtime or data you truly need.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
+                        <div class="text-4xl mb-4">🤲</div>
+                        <h3 class="font-semibold text-xl mb-2">Someone Grants It</h3>
+                        <p class="opacity-70">A kind stranger pays for it anonymously.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
+                        <div class="text-4xl mb-4">🌙</div>
+                        <h3 class="font-semibold text-xl mb-2">Receive Quietly</h3>
+                        <p class="opacity-70">No names. No faces. Just kindness delivered.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-16 border-t border-[#E0D5C5]/60">
-            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-                <p class="text-lg leading-relaxed">
-                    Here, wishes are small.<br>
-                    Giving is anonymous.<br>
-                    Kindness is quiet.
-                </p>
-                <div class="flex justify-center">
-                    <a href="browse.html" class="px-6 py-2 rounded-full border border-[#E0D5C5] text-sm text-[#2E2E2E] hover:bg-white transition-colors">
-                        Continue
+        <!-- Featured Wishes -->
+        <section class="py-20 px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-10">
+                    <div>
+                        <h2 class="text-3xl font-semibold">Quiet Wishes Right Now</h2>
+                        <p class="opacity-70">Help someone today — anonymously</p>
+                    </div>
+                    <a href="browse.html" class="text-accent hover:underline flex items-center gap-2">
+                        View all <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
-            </div>
-        </section>
 
-        <section class="py-16 border-t border-[#E0D5C5]/60">
-            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12 space-y-3">
-                    <h2 class="text-2xl font-semibold">How it works</h2>
-                    <p class="text-sm text-[#7A7A7A]">Three quiet steps from wish to kindness.</p>
-                </div>
-                <div class="grid md:grid-cols-3 gap-10">
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
-                            <span class="text-lg">✨</span>
-                        </div>
-                        <h3 class="text-base font-semibold">Make a wish</h3>
-                        <p class="text-sm text-[#7A7A7A]">Ask for a small amount of airtime or data you need.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
-                            <span class="text-lg">🤲</span>
-                        </div>
-                        <h3 class="text-base font-semibold">A stranger grants it</h3>
-                        <p class="text-sm text-[#7A7A7A]">Someone chooses your wish and pays for it quietly.</p>
-                    </div>
-                    <div class="text-center space-y-4">
-                        <div class="w-12 h-12 rounded-full bg-white/80 border border-[#E0D5C5] flex items-center justify-center mx-auto">
-                            <span class="text-lg">🌙</span>
-                        </div>
-                        <h3 class="text-base font-semibold">No one knows who gave</h3>
-                        <p class="text-sm text-[#7A7A7A]">You receive what you need, and they stay anonymous.</p>
-                    </div>
-                </div>
-                <div class="mt-10 flex justify-center">
-                    <a href="login.html" class="px-8 py-3 rounded-full bg-[#2563eb] text-sm font-medium text-white hover:bg-[#1d4ed8] transition-colors">
-                        Get Started
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <section id="featured-wishes" class="py-18 border-t border-[#E0D5C5]/60">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
-                    <div class="space-y-2">
-                        <h2 class="text-xl font-semibold">Some quiet wishes</h2>
-                        <p class="text-sm text-[#7A7A7A]">A gentle selection of active wishes from the community.</p>
-                    </div>
-                    <a href="browse.html" class="text-sm font-medium text-[#2E2E2E] underline-offset-4 hover:underline">
-                        View all wishes
-                    </a>
-                </div>
-                <div id="wishes-container" class="grid md:grid-cols-3 gap-6">
-                    <div class="animate-pulse bg-white rounded-2xl p-6 border border-[#E0D5C5]/70">
-                        <div class="h-4 bg-[#E9E0D0] rounded w-1/4 mb-4"></div>
-                        <div class="h-7 bg-[#E9E0D0] rounded w-3/4 mb-4"></div>
-                        <div class="h-4 bg-[#E9E0D0] rounded w-full mb-2"></div>
-                        <div class="h-4 bg-[#E9E0D0] rounded w-5/6"></div>
-                    </div>
+                <div id="wishes-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Populated by JS (wishes.js) -->
                 </div>
             </div>
         </section>
     </main>
 
-    <footer class="bg-white/80 border-t border-black/5 py-10 mt-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm text-[#7A7A7A]">&copy; 2026 Wish. A quiet place for kindness.</p>
+    <footer class="bg-white/5 backdrop-blur-md border-t border-white/10 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center opacity-60 text-sm">
+            © 2026 WISH • A quiet place for kindness in Nigeria
         </div>
     </footer>
 
-    <!-- Firebase SDK -->
+    <!-- Scripts -->
     <script type="module" src="js/utils.js"></script>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/wishes.js"></script>

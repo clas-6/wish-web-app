@@ -70,7 +70,7 @@ onAuthStateChanged(auth, (user) => {
         if (userEmailEl) userEmailEl.innerText = user.email;
         if (authLinks) {
             authLinks.innerHTML = `
-                <a href="dashboard.html" class="text-blue-600 font-semibold">Dashboard</a>
+                <a href="dashboard.html" class="text-primary-dark font-semibold">Dashboard</a>
             `;
         }
         

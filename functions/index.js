@@ -6,8 +6,9 @@ const crypto = require("crypto");
 admin.initializeApp();
 const db = admin.firestore();
 
-const PAYSTACK_SECRET_KEY = "sk_test_your_secret_key"; // Should be in environment config
-const VTU_API_KEY = "your_vtu_api_key";
+// Using Firebase environment config for security
+const PAYSTACK_SECRET_KEY = functions.config().paystack.key;
+const VTU_API_KEY = functions.config().vtu.key;
 const PLATFORM_FEE = 50;
 
 // 1. Create Paystack Payment Intent

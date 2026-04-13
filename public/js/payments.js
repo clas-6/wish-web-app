@@ -5,6 +5,11 @@ let currentRemaining = 0;
 let currentType = '';
 
 window.openGrantModal = (id, remaining, type, network) => {
+    if (!auth.currentUser) {
+        showAlert("Please login to grant wishes", 'error');
+        return;
+    }
+
     currentWishId = id;
     currentRemaining = remaining;
     currentType = type;
