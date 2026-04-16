@@ -25,10 +25,7 @@
 }
 
 body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     font-family: var(--font-main);
-    line-height: 1.6;
     color: var(--text-page);
     background: var(--bg-page);
     background-attachment: fixed;
@@ -38,7 +35,6 @@ body {
 
 button, input, select, textarea {
     font-family: inherit;
-    color: inherit;
 }
 
 h1, h2, h3 {
@@ -63,11 +59,11 @@ p {
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--card-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: var(--card-border);
     border-radius: 10px;
 }
 
@@ -107,11 +103,6 @@ p {
     backdrop-filter: blur(12px);
     border: 1px solid var(--card-border);
     border-radius: 16px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-}
-
-@media (min-width: 768px) {
-    .furni-card { border-radius: 24px; }
 }
 
 .furni-input {
@@ -123,17 +114,6 @@ p {
     font-size: 16px;
     transition: all 0.2s;
 }
-
-.furni-input::placeholder {
-    color: var(--text-muted);
-    opacity: 1; /* Ensures consistent opacity across browsers, especially Firefox */
-}
-
-.furni-input option {
-    background-color: var(--card-bg);
-    color: var(--text-page);
-}
-
 .furni-input:focus {
     outline: none;
     border-color: var(--primary);
@@ -186,6 +166,24 @@ input:focus, select:focus, textarea:focus {
 @keyframes slideUp {
     from { transform: translateY(20px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.5s ease-in forwards;
 }
 
 /* Shimmer / Skeleton Loading */

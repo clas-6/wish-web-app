@@ -1,4 +1,4 @@
-import { auth, onAuthStateChanged, signOut, showAlert, toggleLoading } from './utils.js';
+import { auth, onAuthStateChanged, signOut, showAlert, toggleLoading, toggleTheme } from './utils.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // Handle Login
@@ -70,8 +70,13 @@ onAuthStateChanged(auth, (user) => {
         if (userEmailEl) userEmailEl.innerText = user.email;
         if (authLinks) {
             authLinks.innerHTML = `
+                <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
+                    <i class="fas fa-sun"></i>
+                </button>
                 <a href="dashboard.html" class="text-primary-dark font-semibold">Dashboard</a>
+                <button id="logout-btn" class="text-sm hover:text-[#FACC15] transition">Log out</button>
             `;
+            document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
         }
         
         // Redirect from login/register if already logged in

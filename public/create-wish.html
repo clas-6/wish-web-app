@@ -39,7 +39,10 @@
                     <span>Make a Wish</span>
                     <span class="text-2xl">💛</span>
                 </h1>
-                <p class="opacity-70 mt-2">Ask for a little help anonymously. Someone kind will grant it.</p>
+                <p class="opacity-70 mt-2">Ask for a little help anonymously. Each user has a ₦5,000 weekly limit to ensure everyone gets a chance.</p>
+                <div id="weekly-allowance-display" class="mt-4 text-sm bg-white/5 inline-block px-4 py-2 rounded-xl border border-white/10 hidden">
+                    Loading allowance...
+                </div>
             </div>
 
             <form id="create-wish-form" class="p-8 space-y-8">
@@ -68,13 +71,15 @@
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium opacity-70 mb-2">Amount (₦)</label>
-                        <input type="number" id="amount" required min="100" step="50" placeholder="500" 
+                        <input type="number" id="amount" required min="100" step="50" placeholder="500"
                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
+                        <p id="amount-error" class="text-red-400 text-xs mt-1 hidden">Amount must be at least ₦100</p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium opacity-70 mb-2">Phone Number</label>
-                        <input type="tel" id="phone" required placeholder="08012345678" 
+                        <input type="tel" id="phone" required maxlength="11" placeholder="08012345678" 
                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
+                        <p id="phone-error" class="text-red-400 text-xs mt-1 hidden">Please enter a valid 11-digit Nigerian phone number</p>
                     </div>
                 </div>
 
@@ -82,6 +87,7 @@
                     <label class="block text-sm font-medium opacity-70 mb-2">Why do you need this? (Optional)</label>
                     <textarea id="message" rows="4" maxlength="200" placeholder="I need it to submit my assignment tomorrow..." 
                               class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl text-inherit focus:border-accent outline-none resize-none"></textarea>
+                    <p class="text-xs opacity-60 mt-1 text-right"><span id="message-counter">0</span>/200</p>
                 </div>
 
                 <div class="pt-6">
@@ -99,7 +105,7 @@
 
         <!-- Trust note -->
         <div class="text-center mt-8 opacity-60 text-sm">
-            This wish will be visible anonymously for 24 hours or until granted.
+            This wish will be visible anonymously until it is fully granted.
         </div>
     </main>
 

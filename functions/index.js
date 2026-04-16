@@ -9,7 +9,7 @@ const db = admin.firestore();
 // Using Firebase environment config for security
 const PAYSTACK_SECRET_KEY = functions.config().paystack.key;
 const VTU_API_KEY = functions.config().vtu.key;
-const PLATFORM_FEE = 50;
+const PLATFORM_FEE = 10; // Standardize this across the app
 
 // 1. Create Paystack Payment Intent
 exports.createPaymentIntent = functions.https.onCall(async (data, context) => {
@@ -82,18 +82,23 @@ exports.paystackWebhook = functions.https.onRequest(async (req, res) => {
         const { reference, metadata } = event.data;
         const { wishId, granterUid, originalAmount } = metadata;
 
-        // Run as transaction to ensure atomicity
         try {
             await db.runTransaction(async (transaction) => {
                 const wishRef = db.collection("wishes").doc(wishId);
                 const wishDoc = await transaction.get(wishRef);
+                
+                if (!wishDoc.exists) throw new Error("Wish does not exist");
                 const wish = wishDoc.data();
 
-                // Update payment record
-                const paymentQuery = await db.collection("payments")
+                // Check if already processed (Idempotency)
+                if (wish.processed_references && wish.processed_references.includes(reference)) {
+                    console.log("Transaction already processed");
+                    return;
+                }
+
+                const paymentQuery = await transaction.get(db.collection("payments")
                     .where("paystack_reference", "==", reference)
-                    .limit(1)
-                    .get();
+                    .limit(1));
                 
                 if (!paymentQuery.empty) {
                     transaction.update(paymentQuery.docs[0].ref, { status: "SUCCESS" });
@@ -107,15 +112,16 @@ exports.paystackWebhook = functions.https.onRequest(async (req, res) => {
                 transaction.update(wishRef, {
                     amount_paid: newAmountPaid,
                     remaining_amount: newRemaining,
-                    status: newStatus
+                    status: newStatus,
+                    processed_references: admin.firestore.FieldValue.arrayUnion(reference)
                 });
 
-                // Trigger VTU fulfillment
-                // In a real app, you might want to do this in a separate background function
-                // or after the transaction succeeds to avoid blocking.
-                // For this template, we'll log it for fulfillment.
-                await db.collection("vtu_queue").add({
+                // Add to VTU queue ATOMICALLY within the transaction
+                // Using a generated doc reference to ensure it stays within the transaction
+                const queueRef = db.collection("vtu_queue").doc();
+                transaction.set(queueRef, {
                     wishId,
+                    paystack_reference: reference,
                     amount: originalAmount,
                     phone: wish.phone, // Ideally decrypted here
                     network: wish.network,

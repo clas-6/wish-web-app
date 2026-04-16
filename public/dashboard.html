@@ -95,8 +95,19 @@
     </main>
 
     <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
     <script type="module" src="js/utils.js"></script>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/wishes.js"></script>
+    <script type="module">
+        import { triggerConfetti } from './js/utils.js';
+        // Check if returning from a successful Paystack payment
+        window.addEventListener('load', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('trxref') || urlParams.has('reference')) {
+                triggerConfetti();
+            }
+        });
+    </script>
 </body>
 </html>
