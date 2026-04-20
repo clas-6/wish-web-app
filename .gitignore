@@ -1,8 +1,30 @@
 # Dependencies
 node_modules/
+dist/
+build/
 
 # Firebase
 .firebase/
 firebase-debug.log*
 firestore-debug.log*
 functions/node_modules/
+
+# Environment Variables (Crucial for Paystack/Shago keys)
+.env
+.env.local
+.env.*.local
+
+# Python / Django (For your partner's backend)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+db.sqlite3
+media/
+static_root/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+Thumbs.db

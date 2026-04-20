@@ -40,7 +40,7 @@
 ## 📈 Launch Prep
 - [ ] **Domain Setup**: Point `wish-app.web.app` to a custom domain.
 - [ ] **SEO**: Final audit of meta tags in `index.html`.
-- [ ] **Analytics**: Integrate Firebase Analytics to track "Kindness Given" vs "Wishes Made."
+- [ ] **Analytics**: Integrate Google Analytics or a Django-compatible tracking tool.
 
 ---
 *Built with 💛 to spread kindness.*
