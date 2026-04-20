@@ -1,6 +1,13 @@
 // Django API Configuration
 const API_BASE_URL = location.hostname === "localhost" ? "http://127.0.0.1:8000/api" : "https://api.your-domain.com/api";
 
+// Centralized logout logic
+export const logoutUser = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_email');
+    window.location.href = 'index.html';
+};
+
 // Helper for API requests
 export const apiRequest = async (endpoint, options = {}) => {
     const token = localStorage.getItem('token'); // For JWT Auth
@@ -12,6 +19,10 @@ export const apiRequest = async (endpoint, options = {}) => {
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
     if (!response.ok) {
+        if (response.status === 401) {
+            logoutUser();
+            throw new Error("Session expired. Please log in again.");
+        }
         const error = await response.json();
         throw new Error(error.detail || error.message || "Something went wrong");
     }
@@ -103,6 +114,22 @@ export const triggerConfetti = () => {
         });
     }
 };
+
+export const shareWish = (id, type, amount) => {
+    const url = `${window.location.origin}/browse.html?wish=${id}`;
+    const text = `Help grant this wish for ₦${amount} ${type} on WISH 💛`;
+    
+    if (navigator.share) {
+        navigator.share({ title: 'WISH', text, url });
+    } else {
+        navigator.clipboard.writeText(`${text} ${url}`);
+        showAlert("Link copied to clipboard!", "success");
+    }
+};
+
+// Expose to window for HTML onclick handlers
+window.shareWish = shareWish;
+window.triggerConfetti = triggerConfetti;
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {

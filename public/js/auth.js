@@ -1,4 +1,4 @@
-import { apiRequest, showAlert, toggleLoading, toggleTheme, isAuthenticated } from './utils.js';
+import { apiRequest, showAlert, toggleLoading, toggleTheme, isAuthenticated, logoutUser } from './utils.js';
 
 // Handle Login
 const loginForm = document.getElementById('login-form');
@@ -60,11 +60,7 @@ if (registerForm) {
 }
 
 // Handle Logout
-const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_email');
-    window.location.href = 'index.html';
-};
+const handleLogout = () => logoutUser();
 
 // UI Auth State Sync
 const syncAuthState = () => {

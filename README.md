@@ -18,15 +18,12 @@ A minimalist, quiet, and semi-anonymous platform designed to facilitate the requ
 
 - **Frontend**: HTML5, Tailwind CSS, Vanilla JavaScript (ES Modules).
 - **Backend**: Django REST Framework (JWT Authentication).
-- **Payments**: [Paystack API](https://paystack.com/).
 - **Fulfillment**: VTU API Integration.
 
 ## 🛠️ Setup & Installation
 
 ### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher recommended).
-- [Firebase CLI](https://firebase.google.com/docs/cli).
-- A Paystack account for secret keys.
+- A local web server (e.g., Live Server for VS Code).
 
 ### 1. Clone the repository
 ```bash
@@ -55,10 +52,8 @@ firebase serve
 ```
 
 ## 📁 Project Structure
-- `/public`: Frontend assets (HTML, CSS, JS).
   - `/js`: Modular ES6 scripts (Auth, Wishes, Payments, Utils).
   - `/css`: Custom styles and theme variables.
-- `/functions`: Firebase Cloud Functions for backend logic and webhooks.
 
 ## 📄 License
 This project is licensed under the MIT License - see the LICENSE file for details.
