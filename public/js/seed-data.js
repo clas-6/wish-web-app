@@ -1,5 +1,4 @@
-import { db } from './utils.js';
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { apiRequest } from './utils.js';
 
 const dummyWishes = [
     {
@@ -12,8 +11,7 @@ const dummyWishes = [
         remaining_amount: 500,
         phone: "08011112222",
         message: "I need some airtime to call my parents back home. Any help is appreciated! 💛",
-        status: "OPEN",
-        created_at: serverTimestamp()
+        status: "OPEN"
     },
     {
         uid: "test_user_2",
@@ -25,8 +23,7 @@ const dummyWishes = [
         remaining_amount: 1000,
         phone: "08122334455",
         message: "Final year project is due tomorrow and I ran out of data for research. Please help!",
-        status: "PARTIALLY_FULFILLED",
-        created_at: serverTimestamp()
+        status: "PARTIALLY_FULFILLED"
     },
     {
         uid: "test_user_3",
@@ -38,8 +35,7 @@ const dummyWishes = [
         remaining_amount: 200,
         phone: "09055667788",
         message: "Just a small top-up for an emergency call. Thank you!",
-        status: "OPEN",
-        created_at: serverTimestamp()
+        status: "OPEN"
     }
 ];
 
@@ -50,7 +46,14 @@ export const seedDummyWishes = async () => {
     }
     console.log("🚀 Seeding dummy wishes...");
     for (const wish of dummyWishes) {
-        await addDoc(collection(db, 'wishes'), wish);
+        try {
+            await apiRequest('/wishes/', {
+                method: 'POST',
+                body: JSON.stringify(wish)
+            });
+        } catch (e) {
+            console.error("Failed to seed wish:", e);
+        }
     }
     console.log("✅ Seeding complete! Refresh the page to see the new wishes.");
 };

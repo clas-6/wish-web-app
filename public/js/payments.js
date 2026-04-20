@@ -1,5 +1,4 @@
-import { auth, db, functions, httpsCallable, showAlert, toggleLoading, triggerConfetti } from './utils.js';
-import { doc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { apiRequest, showAlert, toggleLoading, triggerConfetti, isAuthenticated } from './utils.js';
 import { fetchMyWishes, fetchAllWishes } from './wishes.js';
 
 let currentWishId = null;
@@ -7,7 +6,7 @@ let currentRemaining = 0;
 let currentType = '';
 
 window.openGrantModal = (id, remaining, type, network) => {
-    if (!auth.currentUser) {
+    if (!isAuthenticated()) {
         showAlert("Please login to grant wishes", 'error');
         return;
     }
@@ -63,29 +62,18 @@ const simulateLocalGrant = async (amount) => {
     const btn = document.getElementById('confirm-grant');
     try {
         toggleLoading(btn, true, 'Simulating...');
-        const wishRef = doc(db, 'wishes', currentWishId);
         
-        const newRemaining = currentRemaining - amount;
-        const newStatus = newRemaining <= 0 ? "FULFILLED" : "PARTIALLY_FULFILLED";
-
-        await updateDoc(wishRef, {
-            amount_paid: increment(amount),
-            remaining_amount: increment(-amount),
-            status: newStatus
-        });
-
-        // Fire confetti if wish is completed!
-        if (newStatus === "FULFILLED") {
+        // Simulate UI response for frontend dev
+        setTimeout(() => {
             triggerConfetti();
-        }
-
-        showAlert("Local Test: Wish updated successfully!", "success");
-        document.getElementById('close-modal').click();
+            showAlert("Local Simulation: Kindness delivered! 💛", "success");
+            document.getElementById('close-modal').click();
+            
+            // Refresh UI to show the "granted" state
+            fetchMyWishes();
+            fetchAllWishes('ALL');
+        }, 1000);
         
-        // Refresh UI components without reloading the page
-        fetchMyWishes();
-        fetchAllWishes('ALL');
-
     } catch (error) {
         console.error(error);
         showAlert("Simulation failed: " + error.message, "error");
@@ -103,11 +91,10 @@ if (location.hostname === "localhost") {
 document.getElementById('confirm-grant')?.addEventListener('click', async () => {
     const btn = document.getElementById('confirm-grant');
     const amount = Number(document.getElementById('grant-amount').value);
-    const user = auth.currentUser;
 
-    if (!user) return showAlert("Please login to grant wishes", 'error');
-    if (amount < 100) return showAlert("Minimum grant is ₦100", 'error');
-    if (amount > currentRemaining) return showAlert("Amount exceeds remaining wish amount", 'error');
+    if (!isAuthenticated()) { showAlert("Please login to grant wishes", 'error'); return; }
+    if (amount < 100) { showAlert("Minimum grant is ₦100", 'error'); return; }
+    if (amount > currentRemaining) { showAlert("Amount exceeds remaining wish amount", 'error'); return; }
 
     // If testing locally, bypass the real cloud function and Paystack
     if (location.hostname === "localhost") {
@@ -117,14 +104,13 @@ document.getElementById('confirm-grant')?.addEventListener('click', async () => 
 
     try {
         toggleLoading(btn, true, 'Processing...');
-        const createPaymentIntent = httpsCallable(functions, 'createPaymentIntent');
-        const result = await createPaymentIntent({ 
-            wishId: currentWishId, 
-            amount: amount 
+        const data = await apiRequest('/payments/initialize/', { // Partner's Django API endpoint
+            method: 'POST',
+            body: JSON.stringify({ wish_id: currentWishId, amount })
         });
 
-        if (result.data.authorization_url) {
-            window.location.href = result.data.authorization_url;
+        if (data.authorization_url) {
+            window.location.href = data.authorization_url;
         } else {
             throw new Error("Failed to get payment URL");
         }

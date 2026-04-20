@@ -1,14 +1,4 @@
-import { auth, db, showAlert, toggleLoading } from './utils.js';
-import { 
-    collection, 
-    addDoc, 
-    query, 
-    where, 
-    orderBy, 
-    getDocs, 
-    serverTimestamp,
-    Timestamp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { apiRequest, showAlert, toggleLoading, triggerConfetti, isAuthenticated } from './utils.js';
 
 // ====================== CREATE WISH ======================
 const createWishForm = document.getElementById('create-wish-form');
@@ -22,28 +12,15 @@ const messageCounter = document.getElementById('message-counter');
 
 const WEEKLY_LIMIT = 5000;
 
-const updateWeeklyAllowance = async (user) => {
+const updateWeeklyAllowance = async () => {
     const display = document.getElementById('weekly-allowance-display');
-    if (!display || !user) return;
+    if (!display) return;
 
     try {
+        // Fetch remaining allowance from Django backend
         display.classList.remove('hidden');
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-        const q = query(
-            collection(db, 'wishes'),
-            where('uid', '==', user.uid),
-            where('created_at', '>=', Timestamp.fromDate(oneWeekAgo))
-        );
-
-        const snapshot = await getDocs(q);
-        let weeklyTotal = 0;
-        snapshot.forEach(doc => {
-            weeklyTotal += doc.data().total_amount;
-        });
-
-        const remaining = Math.max(0, WEEKLY_LIMIT - weeklyTotal);
+        const data = await apiRequest('/wishes/allowance/'); // Partner's Django API endpoint
+        const remaining = data.remaining;
         display.innerHTML = `Weekly Remaining: <span class="font-bold text-accent">₦${remaining.toLocaleString()}</span> / ₦${WEEKLY_LIMIT.toLocaleString()}`;
     } catch (error) {
         console.error("Error updating allowance:", error);
@@ -106,68 +83,28 @@ if (createWishForm) {
         e.preventDefault();
         
         const btn = createWishForm.querySelector('button[type="submit"]');
-        const user = auth.currentUser;
 
-        if (!user) {
+        if (!isAuthenticated()) {
             showAlert("Please log in to make a wish", 'error');
             return;
         }
         
-        const phone = document.getElementById('phone').value.trim();
-        if (!validatePhone(phone)) {
-            showAlert("Please provide a valid Nigerian phone number", 'error');
-            return;
-        }
-
         const amount = Number(amountInput.value);
-        if (!validateAmount(amount)) {
-            showAlert("Please provide a valid amount for your wish.", 'error');
-            return;
-        }
-
-
         try {
-            toggleLoading(btn, true, 'Checking weekly limit...');
-            
-            // Calculate the start of the "rolling" week (7 days ago)
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-            const q = query(
-                collection(db, 'wishes'),
-                where('uid', '==', user.uid),
-                where('created_at', '>=', Timestamp.fromDate(oneWeekAgo))
-            );
-
-            const snapshot = await getDocs(q);
-            let weeklyTotal = 0;
-            snapshot.forEach(doc => {
-                weeklyTotal += doc.data().total_amount;
-            });
-
-            if (weeklyTotal + amount > WEEKLY_LIMIT) {
-                showAlert(`Weekly limit exceeded. You have ₦${Math.max(0, WEEKLY_LIMIT - weeklyTotal)} remaining for this week.`, 'error');
-                toggleLoading(btn, false);
-                return;
-            }
-
             const wishData = {
-                uid: user.uid,
                 type: document.getElementById('type').value,
                 network: document.getElementById('network').value,
                 category: document.getElementById('category')?.value || 'KINDNESS',
                 total_amount: amount,
-                amount_paid: 0,
-                remaining_amount: amount,
-                phone: phone,
+                phone: phoneInput.value.trim(),
                 message: document.getElementById('message').value.trim(),
-                status: 'OPEN',
-                created_at: serverTimestamp()
             };
 
             toggleLoading(btn, true, 'Submitting your wish...');
-            
-            await addDoc(collection(db, 'wishes'), wishData);
+            await apiRequest('/wishes/', {
+                method: 'POST',
+                body: JSON.stringify(wishData)
+            });
             
             showAlert("Wish created successfully! 💛", 'success');
             setTimeout(() => {
@@ -182,11 +119,25 @@ if (createWishForm) {
     });
 }
 
+// Filter click handler for Browse Page
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        // UI Update: Toggle active classes
+        document.querySelectorAll('.filter-btn').forEach(b => {
+            b.classList.remove('active', 'bg-accent', 'text-primary-dark');
+            b.classList.add('bg-[var(--card-bg)]');
+        });
+        btn.classList.add('active', 'bg-accent', 'text-primary-dark');
+        btn.classList.remove('bg-[var(--card-bg)]');
+        
+        fetchAllWishes(btn.dataset.filter);
+    });
+});
+
 // ====================== FETCH MY WISHES (Dashboard) ======================
 export const fetchMyWishes = async () => {
     const container = document.getElementById('my-wishes-container');
-    const user = auth.currentUser;
-    if (!container || !user) return;
+    if (!container || !isAuthenticated()) { /* Optional: Redirect to login or show empty state if not authenticated */ return; }
 
     // Show shimmer placeholders
     container.innerHTML = `
@@ -195,16 +146,10 @@ export const fetchMyWishes = async () => {
     `;
 
     try {
-        const q = query(
-            collection(db, 'wishes'),
-            where('uid', '==', user.uid),
-            orderBy('created_at', 'desc')
-        );
-
-        const snapshot = await getDocs(q);
+        const wishes = await apiRequest('/wishes/mine/'); // Partner's Django API endpoint
         container.innerHTML = '';
 
-        if (snapshot.empty) {
+        if (wishes.length === 0) {
             container.innerHTML = `
                 <div class="col-span-full text-center py-20 flex flex-col items-center">
                     <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center text-4xl mb-4">✨</div>
@@ -216,8 +161,7 @@ export const fetchMyWishes = async () => {
             return;
         }
 
-        snapshot.forEach(doc => {
-            const wish = doc.data();
+        wishes.forEach(wish => {
             const progress = wish.total_amount > 0 ? (wish.amount_paid / wish.total_amount) * 100 : 0;
 
             container.innerHTML += `
@@ -228,7 +172,7 @@ export const fetchMyWishes = async () => {
                             <h3 class="text-xl font-semibold mt-3">${wish.network} - ₦${wish.total_amount}</h3>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="shareWish('${doc.id}', '${wish.type}', ${wish.total_amount})" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all">
+                            <button onclick="shareWish('${wish.id}', '${wish.type}', ${wish.total_amount})" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-all">
                                 <i class="fas fa-share-nodes text-xs"></i>
                             </button>
                             <span class="text-xs px-3 py-1 bg-white/20 rounded-full">${wish.status}</span>
@@ -266,24 +210,10 @@ export const fetchAllWishes = async (filter = 'ALL') => {
     `;
 
     try {
-        const q = query(
-            collection(db, 'wishes'),
-            where('status', 'in', ['OPEN', 'PARTIALLY_FULFILLED']),
-            orderBy('created_at', 'desc')
-        );
-
-        const snapshot = await getDocs(q);
+        const allWishes = await apiRequest('/wishes/'); // Partner's Django API endpoint
         container.innerHTML = '';
-
-        let wishes = [];
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            if (filter === 'ALL' || 
-                (filter === data.type) || 
-                (filter === (data.category || 'KINDNESS'))) {
-                wishes.push({ id: doc.id, ...data });
-            }
-        });
+        
+        const wishes = allWishes.filter(w => filter === 'ALL' || w.type === filter || (w.category || 'KINDNESS') === filter);
 
         if (wishes.length === 0) {
             container.innerHTML = `
@@ -314,7 +244,7 @@ export const fetchAllWishes = async (filter = 'ALL') => {
                             <button onclick="shareWish('${wish.id}', '${wish.type}', ${wish.total_amount})" class="w-9 h-9 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition-all text-accent">
                                 <i class="fas fa-share-nodes"></i>
                             </button>
-                            <span class="text-xs bg-white/20 px-3 py-1 rounded-full">${new Date(wish.created_at?.toDate()).toLocaleDateString('en-NG', {month:'short', day:'numeric'})}</span>
+                            <span class="text-xs bg-white/20 px-3 py-1 rounded-full">${new Date(wish.created_at).toLocaleDateString('en-NG', {month:'short', day:'numeric'})}</span>
                         </div>
                     </div>
 
@@ -345,11 +275,11 @@ export const fetchAllWishes = async (filter = 'ALL') => {
     }
 };
 
-// Auto fetch when user is logged in
-auth.onAuthStateChanged(user => {
-    if (user) {
-        fetchMyWishes();
-        updateWeeklyAllowance(user);
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    if (isAuthenticated()) { // Only fetch user-specific data if logged in
+        fetchMyWishes(); 
+        updateWeeklyAllowance(); // Fetch allowance
     }
-    fetchAllWishes('ALL');
+    fetchAllWishes('ALL'); // Always fetch public wishes
 });

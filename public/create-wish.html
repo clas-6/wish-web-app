@@ -47,7 +47,7 @@
 
             <form id="create-wish-form" class="p-8 space-y-8">
                 
-                <div class="grid md:grid-cols-2 gap-6">
+                <div class="grid md:grid-cols-3 gap-6">
                     <div>
                         <label class="block text-sm font-medium opacity-70 mb-2">Type</label>
                         <select id="type" required 
@@ -64,6 +64,17 @@
                             <option value="AIRTEL">Airtel</option>
                             <option value="GLO">Glo</option>
                             <option value="9MOBILE">9mobile</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium opacity-70 mb-2">Category</label>
+                        <select id="category" required 
+                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
+                            <option value="KINDNESS">Kindness</option>
+                            <option value="CELEBRATION">Celebration</option>
+                            <option value="EASTER">Easter</option>
+                            <option value="VALENTINE">Valentine</option>
+                            <option value="NEW YEAR">New Year</option>
                         </select>
                     </div>
                 </div>

@@ -5,32 +5,37 @@
 - [x] Implement Light/Dark mode toggle.
 - [x] Add shimmer loading states for Firestore data.
 - [x] **Custom Toasts**: Replace `alert()` in `utils.js` with a non-blocking toast notification system.
-- [ ] **Form Validation**: Add real-time validation (phone number format, minimum amounts) in `create-wish.html`.
+- [x] **Form Validation**: Add real-time validation (phone number format, minimum amounts) in `create-wish.html`.
 - [x] **Empty States**: Design better "No wishes found" graphics for the Browse and Dashboard pages.
-- [ ] **Confetti**: Trigger celebration on 100% wish fulfillment.
+- [x] **Confetti**: Trigger celebration on 100% wish fulfillment.
 
 ## 🛡️ Security & Infrastructure
-- [x] **Firestore Rules**: Complete and deploy the `firestore.rules` (ensure `amount_paid` is read-only for users).
-- [ ] **Firebase Secrets**: Move Paystack/VTU keys from `functions/index.js` to Google Cloud Secret Manager.
-- [ ] **Environment Check**: Ensure `seed-data.js` and local simulation bypasses in `payments.js` are disabled in production.
+- [ ] **Django API Design**: Finalize REST endpoints for Wishes, Profiles, and Transactions.
+- [ ] **JWT Auth**: Implement secure token-based authentication (DRF SimpleJWT).
+- [x] **Local Dev Bypass**: Frontend simulation mode active for testing UI/UX without a live backend.
 - [ ] **Slug System**: Implement a slug-based URL system (e.g., /wish/quiet-yellow-sun) to replace raw Firestore IDs for enhanced anonymity.
-- [ ] **Index Optimization**: Create Firestore composite indexes for queries (e.g., filtering by type + status).
+
+## 🔗 API Endpoint Map (For Partner)
+- `POST /api/token/` -> `{ email, password }` returns `{ access, refresh }`
+- `POST /api/register/` -> `{ email, password }`
+- `GET  /api/wishes/` -> Returns array of all open wishes
+- `POST /api/wishes/` -> `{ type, network, category, total_amount, phone, message }`
+- `GET  /api/wishes/mine/` -> Returns array of wishes owned by current user
+- `GET  /api/wishes/allowance/` -> Returns `{ remaining: number }`
+- `POST /api/payments/initialize/` -> `{ wish_id, amount }` returns `{ authorization_url }`
 
 ## 💡 Technical Notes for Partner (Backend Requirements)
 > *Crucial logic implemented in frontend that needs backend parity:*
-- **Rolling Weekly Limit**: Frontend enforces a **₦5,000 limit** based on a rolling 7-day window. Partner must implement a `beforeCreate` Cloud Function or a `checkLimit` Callable to prevent API-level bypass.
-- **Firestore Indexing**: The "Weekly Allowance" display requires a composite index on `wishes` for the fields: `uid (Ascending)` + `created_at (Descending)`.
-- **Validation Parity**: Ensure the backend validates the Nigerian phone number format (`^0[789][01]\d{8}$`) and the minimum wish amount (₦100) before processing.
-- **Slug Generation**: When a wish is created, the backend should generate a unique, human-readable slug to be used for the public URL.
+- **Rolling Weekly Limit**: Django must enforce the **₦5,000 weekly limit** per user in the `Wish` model's save method or serializer validation.
+- **CORS Policy**: Enable `django-cors-headers` to allow the frontend to communicate with the API during development.
+- **Field Naming**: Use `total_amount` for the wish goal and `amount_paid` for current progress to match frontend templates.
 
-## � Payments & Fulfillment (Partner's Part)
-- [ ] **Paystack Webhook**: Finalize the `paystackWebhook` in Cloud Functions.
-    - [ ] Implement idempotency (check `processed_references`) to prevent double-crediting.
-    - [ ] Log every raw webhook event to a `webhook_logs` collection for debugging.
-- [ ] **VTU Integration**:
-    - [ ] Map `type` and `network` to real provider API service IDs.
-    - [ ] Implement a retry queue for failed VTU attempts.
-    - [ ] Add a `vtu_logs` sub-collection to each wish for transparency.
+## 💳 Payments & Fulfillment (Django Integration)
+- [ ] **Paystack Integration**: Initialize transactions and handle verification via server-side requests.
+- [ ] **Shago VTU Provider**:
+    - [ ] Securely store Shago API keys in `.env` or Django Secrets.
+    - [ ] Map frontend types (`AIRTIME`, `DATA`) to Shago service codes.
+    - [ ] Implement error handling for "Provider Down" scenarios to allow for automatic retries.
 
 ## 📈 Launch Prep
 - [ ] **Domain Setup**: Point `wish-app.web.app` to a custom domain.

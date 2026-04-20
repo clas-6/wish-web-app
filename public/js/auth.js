@@ -1,5 +1,4 @@
-import { auth, onAuthStateChanged, signOut, showAlert, toggleLoading, toggleTheme } from './utils.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { apiRequest, showAlert, toggleLoading, toggleTheme, isAuthenticated } from './utils.js';
 
 // Handle Login
 const loginForm = document.getElementById('login-form');
@@ -8,11 +7,18 @@ if (loginForm) {
         e.preventDefault();
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-        const btn = loginForm.querySelector('button');
+        const btn = loginForm.querySelector('button'); // Login button
 
         try {
             toggleLoading(btn, true, 'Logging in...');
-            await signInWithEmailAndPassword(auth, email, password);
+            const data = await apiRequest('/token/', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            
+            localStorage.setItem('token', data.access);
+            localStorage.setItem('user_email', email);
+            
             window.location.href = 'dashboard.html';
         } catch (error) {
             showAlert(error.message, 'error');
@@ -30,7 +36,7 @@ if (registerForm) {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm-password').value;
-        const btn = registerForm.querySelector('button');
+        const btn = registerForm.querySelector('button'); // Register button
 
         if (password !== confirmPassword) {
             return showAlert("Passwords do not match", 'error');
@@ -38,7 +44,12 @@ if (registerForm) {
 
         try {
             toggleLoading(btn, true, 'Creating Account...');
-            await createUserWithEmailAndPassword(auth, email, password);
+            await apiRequest('/register/', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            
+            showAlert("Account created! Please login.", "success");
             window.location.href = 'dashboard.html';
         } catch (error) {
             showAlert(error.message, 'error');
@@ -49,27 +60,27 @@ if (registerForm) {
 }
 
 // Handle Logout
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', async () => {
-        try {
-            await signOut(auth);
-            window.location.href = 'index.html';
-        } catch (error) {
-            showAlert(error.message, 'error');
-        }
-    });
-}
+const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user_email');
+    window.location.href = 'index.html';
+};
 
-// Auth State Observer
-onAuthStateChanged(auth, (user) => {
+// UI Auth State Sync
+const syncAuthState = () => {
     const userEmailEl = document.getElementById('user-email');
     const authLinks = document.getElementById('auth-links');
+    const loggedIn = isAuthenticated();
     
-    if (user) {
-        if (userEmailEl) userEmailEl.innerText = user.email;
+    if (loggedIn) { // User is logged in
+        if (userEmailEl) userEmailEl.innerText = localStorage.getItem('user_email'); // Display email
         if (authLinks) {
             authLinks.innerHTML = `
+                <div class="hidden md:flex items-center space-x-8 text-sm mr-4">
+                    <a href="browse.html" class="hover:text-[#FACC15] transition">Browse Wishes</a>
+                    <a href="create-wish.html" class="hover:text-[#FACC15] transition">Post a Wish</a>
+                    <a href="dashboard.html" class="hover:text-[#FACC15] transition">My Impact</a>
+                </div>
                 <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -77,17 +88,17 @@ onAuthStateChanged(auth, (user) => {
                 <button id="logout-btn" class="text-sm hover:text-[#FACC15] transition">Log out</button>
             `;
             document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
+            document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
         }
-        
-        // Redirect from login/register if already logged in
-        if (window.location.pathname.includes('login.html') || window.location.pathname.includes('register.html')) {
-            window.location.href = 'dashboard.html';
-        }
-    } else {
-        // Redirect to login if on protected pages
-        const protectedPages = ['dashboard.html', 'create-wish.html'];
-        if (protectedPages.some(page => window.location.pathname.includes(page))) {
-            window.location.href = 'login.html';
-        }
+    } // Else: User is NOT logged in. Default auth links (Login/Register) will remain.
+
+    // Conditional Redirection Logic (Protected Routes)
+    const path = window.location.pathname;
+    if (loggedIn && (path.includes('login.html') || path.includes('register.html'))) { // If logged in, don't show login/register
+        window.location.href = 'dashboard.html';
+    } else if (!loggedIn && (path.includes('dashboard.html') || path.includes('create-wish.html'))) { // If not logged in, protect certain pages
+        window.location.href = 'login.html';
     }
-});
+};
+
+document.addEventListener('DOMContentLoaded', syncAuthState);

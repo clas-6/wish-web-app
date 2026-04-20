@@ -1,31 +1,26 @@
-// Firebase Configuration (Replace with your own config)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut, connectAuthEmulator } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, connectFirestoreEmulator } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getFunctions, httpsCallable, connectFunctionsEmulator } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+// Django API Configuration
+const API_BASE_URL = location.hostname === "localhost" ? "http://127.0.0.1:8000/api" : "https://api.your-domain.com/api";
 
-// IMPORTANT: Replace these with your actual Firebase project configuration found in the Firebase Console
-const firebaseConfig = {
-  apiKey: "AIzaSy...", // Partner replaces this
-  authDomain: "wish-app-xyz.firebaseapp.com",
-  projectId: "wish-app-xyz",
-  storageBucket: "wish-app-xyz.appspot.com",
-  messagingSenderId: "1234567890",
-  appId: "1:1234567890:web:abcdef"
+// Helper for API requests
+export const apiRequest = async (endpoint, options = {}) => {
+    const token = localStorage.getItem('token'); // For JWT Auth
+    const headers = {
+        'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
+        ...options.headers
+    };
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || error.message || "Something went wrong");
+    }
+    return response.json();
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const functions = getFunctions(app);
-
-// Connect to emulators if running locally
-if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-    connectAuthEmulator(auth, "http://127.0.0.1:9099");
-    connectFirestoreEmulator(db, "127.0.0.1", 8080);
-    connectFunctionsEmulator(functions, "127.0.0.1", 5001);
-}
+export const isAuthenticated = () => {
+    return localStorage.getItem('token') !== null;
+};
 
 // Helper for UI state
 export const toggleLoading = (button, isLoading, text = "Loading...") => {
@@ -114,5 +109,3 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
     initTheme();
 });
-
-export { auth, db, functions, httpsCallable, onAuthStateChanged, signOut };

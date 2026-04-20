@@ -9,15 +9,15 @@ A minimalist, quiet, and semi-anonymous platform designed to facilitate the requ
 - **Modern Glassmorphism UI**: A sleek, translucent interface built with Tailwind CSS and custom CSS variables.
 - **Adaptive Theming**: Full support for native Light and Dark modes with smooth transitions.
 - **Anonymous Gifting**: Grant airtime or data wishes without revealing your identity to the recipient.
-- **Secure Payments**: Integrated with Paystack for reliable transaction processing.
-- **Automated Fulfillment**: Background Cloud Functions handle VTU (Virtual Top-Up) logic upon successful payment.
-- **Real-time Dashboard**: Track your "Kindness Impact" and manage active wishes via Firebase Firestore.
+- **Secure Payments**: Integration ready for Paystack for reliable transaction processing.
+- **Automated Fulfillment**: Integration ready for Shago VTU API for automated airtime/data delivery.
+- **Real-time Dashboard**: Track your "Kindness Impact" and manage active wishes via a secure REST API.
 - **Performance Focused**: Optimized with shimmer loading states (Skeleton screens) and responsive design for all devices.
 
 ## 🚀 Tech Stack
 
 - **Frontend**: HTML5, Tailwind CSS, Vanilla JavaScript (ES Modules).
-- **Backend**: Firebase (Authentication, Cloud Firestore, Cloud Functions).
+- **Backend**: Django REST Framework (JWT Authentication).
 - **Payments**: [Paystack API](https://paystack.com/).
 - **Fulfillment**: VTU API Integration.
 
