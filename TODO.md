@@ -3,7 +3,7 @@
 ## 🎨 Frontend Refinements
 - [x] Rebrand to "WISH" and implement Glassmorphism design.
 - [x] Implement Light/Dark mode toggle.
-- [x] Add shimmer loading states for Firestore data.
+- [x] Add shimmer loading states for API data.
 - [x] **Custom Toasts**: Replace `alert()` in `utils.js` with a non-blocking toast notification system.
 - [x] **Form Validation**: Add real-time validation (phone number format, minimum amounts) in `create-wish.html`.
 - [x] **Refined UI**: Implemented enhanced Empty States and dynamic Dashboard statistics.
@@ -15,7 +15,7 @@
 - [ ] **Django API Design**: Finalize REST endpoints for Wishes, Profiles, and Transactions.
 - [ ] **JWT Auth**: Implement secure token-based authentication (DRF SimpleJWT).
 - [x] **Local Dev Bypass**: Frontend simulation mode active for testing UI/UX without a live backend.
-- [ ] **Slug System**: Implement a slug-based URL system (e.g., /wish/quiet-yellow-sun) to replace raw Firestore IDs for enhanced anonymity.
+- [ ] **Slug System**: Implement a slug-based URL system (e.g., /wish/quiet-yellow-sun) to replace raw database IDs for enhanced anonymity.
 
 ## 🔗 API Endpoint Map (For Partner)
 - `POST /api/token/` -> `{ email, password }` returns `{ access, refresh }`
@@ -40,7 +40,7 @@
     - [ ] Implement error handling for "Provider Down" scenarios to allow for automatic retries.
 
 ## 📈 Launch Prep
-- [ ] **Domain Setup**: Point `wish-app.web.app` to a custom domain.
+- [ ] **Domain Setup**: Deploy the frontend to a static hosting provider (e.g., Vercel, Netlify, or Cloudflare Pages).
 - [ ] **SEO**: Final audit of meta tags in `index.html`.
 - [ ] **Analytics**: Integrate Google Analytics or a Django-compatible tracking tool.
 

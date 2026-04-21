@@ -1,7 +1,7 @@
 import { apiRequest } from './utils.js';
 import { OCCASION_CONFIG, WISH_CATEGORIES } from './constants.js';
 
-const dummyWishes = [
+export const dummyWishes = [
     {
         uid: "test_user_1",
         type: "AIRTIME",

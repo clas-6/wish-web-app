@@ -96,7 +96,7 @@ document.getElementById('confirm-grant')?.addEventListener('click', async () => 
     if (amount < FINANCIAL.MIN_AMOUNT) { showAlert(`Minimum grant is ₦${FINANCIAL.MIN_AMOUNT}`, 'error'); return; }
     if (amount > currentRemaining) { showAlert("Amount exceeds remaining wish amount", 'error'); return; }
 
-    // If testing locally, bypass the real cloud function and Paystack
+    // If testing locally, bypass the real Django API and Paystack
     if (location.hostname === "localhost") {
         await simulateLocalGrant(amount);
         return;

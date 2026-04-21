@@ -1,8 +1,8 @@
-import { API_CONFIG, STORAGE_KEYS, UI_CONFIG, THEME_CONFIG, OCCASION_CONFIG } from './constants.js';
+import { API_CONFIG, STORAGE_KEYS, UI_CONFIG, THEME_CONFIG, OCCASION_CONFIG, ERROR_MESSAGES } from './constants.js';
 
 const API_BASE_URL = location.hostname === "localhost" || location.hostname === "127.0.0.1" 
     ? API_CONFIG.BASE_URL 
-    : "https://api.your-domain.com/api";
+    : API_CONFIG.PROD_BASE_URL;
 
 // Centralized logout logic
 export const logoutUser = () => {
@@ -20,16 +20,33 @@ export const apiRequest = async (endpoint, options = {}) => {
         ...options.headers
     };
 
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
-    if (!response.ok) {
-        if (response.status === 401) {
-            logoutUser();
-            throw new Error("Session expired. Please log in again.");
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
+        
+        // Handle "No Content" responses
+        if (response.status === 204) return {};
+
+        // Safely parse JSON only if the content-type header suggests it
+        const contentType = response.headers.get("content-type");
+        const data = (contentType && contentType.includes("application/json")) 
+            ? await response.json() 
+            : null;
+
+        if (!response.ok) {
+            if (response.status === 401) {
+                logoutUser();
+                throw new Error("Session expired. Please log in again.");
+            }
+            throw new Error(data?.detail || data?.message || `Request failed with status ${response.status}`);
         }
-        const error = await response.json();
-        throw new Error(error.detail || error.message || "Something went wrong");
+        return data;
+    } catch (error) {
+        // Handle network errors (DNS, offline, etc.)
+        if (error.message === 'Failed to fetch') {
+            throw new Error("Unable to connect to the server. Please check your internet or try again later.");
+        }
+        throw error;
     }
-    return response.json();
 };
 
 export const isAuthenticated = () => {
@@ -88,6 +105,23 @@ const createToastContainer = () => {
     return container;
 };
 
+// ====================== GLOBAL ERROR BOUNDARY ======================
+const initGlobalErrorHandlers = () => {
+    // Catch standard runtime errors (syntax, reference, type errors)
+    window.onerror = (message, source, lineno, colno, error) => {
+        console.error("Global Error Caught:", { message, source, lineno, colno, error });
+        showAlert(ERROR_MESSAGES.GENERIC_ERROR, 'error');
+        return false; // Allow standard logging to console
+    };
+
+    // Catch unhandled promise rejections (async/await failures without .catch)
+    window.onunhandledrejection = (event) => {
+        console.error("Unhandled Promise Rejection:", event.reason);
+        // Use the error message if available, otherwise fall back to generic
+        const msg = (event.reason && event.reason.message) ? event.reason.message : ERROR_MESSAGES.GENERIC_ERROR;
+        showAlert(msg, 'error');
+    };
+};
 
 // ====================== THEME MANAGEMENT ======================
 export const initTheme = () => {
@@ -249,4 +283,5 @@ window.triggerConfetti = triggerConfetti;
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
+    initGlobalErrorHandlers();
 });

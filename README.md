@@ -2,7 +2,7 @@
 
 A minimalist, quiet, and semi-anonymous platform designed to facilitate the requesting and granting of small airtime and data needs in Nigeria. **WISH** focuses on community kindness through a modern, "Glassmorphism" inspired interface.
 
-![WISH Preview](https://wish-app.web.app/assets/og-image.png)
+![WISH Preview](assets/og-image.png)
 
 ## ✨ Features
 
@@ -31,25 +31,17 @@ git clone https://github.com/your-username/wish-app.git
 cd wish-app
 ```
 
-### 2. Configure Firebase
-Update the `firebaseConfig` object in `public/js/utils.js` with your project credentials found in the Firebase Console.
+### 2. Configure API Endpoint
+Ensure the `API_CONFIG.BASE_URL` in `public/js/constants.js` points to your partner's Django API (default is `http://localhost:8000/api`).
 
-### 3. Setup Cloud Functions
-Navigate to the functions directory and install dependencies:
-```bash
-cd functions
-npm install
-```
-Set your environment configurations for Paystack and your VTU provider:
-```bash
-firebase functions:config:set paystack.key="your_secret_key" vtu.key="your_vtu_api_key"
-```
+### 3. Backend Setup (Django)
+Your partner should set up the Django REST Framework project. Ensure `django-cors-headers` is configured to allow requests from your frontend's local address.
 
 ### 4. Local Development
-Start the Firebase emulator or use a local live server:
-```bash
-firebase serve
-```
+Use a local static file server to run the frontend:
+*   **VS Code**: Use the "Live Server" extension.
+*   **Node.js**: Run `npx http-server public`.
+*   **Python**: Run `python -m http.server` inside the `public` folder.
 
 ## 📁 Project Structure
   - `/js`: Modular ES6 scripts (Auth, Wishes, Payments, Utils).

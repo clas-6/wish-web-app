@@ -1,5 +1,6 @@
 import { apiRequest, showAlert, toggleLoading, triggerConfetti, isAuthenticated } from './utils.js';
 import { ENDPOINTS, VALIDATION, FINANCIAL, WISH_CATEGORIES, SUCCESS_MESSAGES, UI_CONFIG, DATE_CONFIG } from './constants.js';
+import { dummyWishes } from './seed-data.js';
 
 // ====================== CREATE WISH ======================
 const createWishForm = document.getElementById('create-wish-form');
@@ -161,18 +162,19 @@ export const fetchMyWishes = async () => {
             try {
                 wishes = await apiRequest(ENDPOINTS.WISHES_MINE);
             } catch (e) {
-                console.warn("Dev Mode: API failed, showing empty state simulation.");
-                wishes = [];
+                console.warn("Dev Mode: Django API unreachable. Showing mock 'My Wishes'.");
+                // Filter dummy wishes to simulate "mine"
+                wishes = dummyWishes.slice(0, 1); 
             }
         } else {
             wishes = await apiRequest(ENDPOINTS.WISHES_MINE);
         }
 
-        container.innerHTML = '';
-        
         // Update Dashboard Stats
         const statWishes = document.getElementById('stat-wishes');
         const wishCount = document.getElementById('wish-count');
+        
+        container.innerHTML = '';
         if (statWishes) statWishes.innerText = wishes.length;
         if (wishCount) wishCount.innerText = `${wishes.length} wishes`;
 
@@ -191,11 +193,12 @@ export const fetchMyWishes = async () => {
             return;
         }
 
+        let html = '';
         wishes.forEach(wish => {
             const progress = wish.total_amount > 0 ? (wish.amount_paid / wish.total_amount) * 100 : 0;
 
-            container.innerHTML += `
-                <div class="furni-card p-6">
+            html += `
+                <div class="furni-card p-6 animate-fade-in">
                     <div class="flex justify-between items-start">
                         <div>
                             <span class="text-xs uppercase tracking-widest px-3 py-1 bg-[var(--card-border)] rounded-full">${wish.type}</span>
@@ -221,6 +224,7 @@ export const fetchMyWishes = async () => {
                 </div>
             `;
         });
+        container.innerHTML = html;
     } catch (error) {
         console.error("Error fetching my wishes:", error);
     }
@@ -260,15 +264,13 @@ export const fetchAllWishes = async (filter = 'ALL') => {
             try {
                 allWishes = await apiRequest(ENDPOINTS.WISHES);
             } catch (e) {
-                console.warn("Dev Mode: API failed, showing no wishes.");
-                allWishes = [];
+                console.warn("Dev Mode: Django API unreachable. Using seed-data.js for preview.");
+                allWishes = dummyWishes;
             }
         } else {
             allWishes = await apiRequest(ENDPOINTS.WISHES);
         }
 
-        container.innerHTML = '';
-        
         const wishes = allWishes.filter(w => filter === 'ALL' || w.type === filter || (w.category || 'KINDNESS') === filter);
 
         if (wishes.length === 0) {
@@ -287,12 +289,13 @@ export const fetchAllWishes = async (filter = 'ALL') => {
             return;
         }
 
+        let html = '';
         wishes.forEach(wish => {
             const progress = wish.total_amount > 0 ? (wish.amount_paid / wish.total_amount) * 100 : 0;
             const wishDate = wish.created_at ? new Date(wish.created_at) : new Date();
 
-            container.innerHTML += `
-                <div class="furni-card p-6 hover:scale-[1.02] transition-all duration-300">
+            html += `
+                <div class="furni-card p-6 hover:scale-[1.02] transition-all duration-300 animate-fade-in">
                     <div class="flex justify-between items-start mb-4">
                         <div class="flex items-center gap-3">
                             <div class="w-11 h-11 bg-accent text-primary-dark font-bold rounded-2xl flex items-center justify-center">
@@ -333,6 +336,7 @@ export const fetchAllWishes = async (filter = 'ALL') => {
                 </div>
             `;
         });
+        container.innerHTML = html;
     } catch (error) {
         console.error("Error fetching wishes:", error);
     }

@@ -3,6 +3,7 @@
 // API Configuration
 export const API_CONFIG = {
   BASE_URL: 'http://localhost:8000/api',
+  PROD_BASE_URL: 'https://api.your-domain.com/api',
   TIMEOUT: 10000, // 10 seconds
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000, // 1 second

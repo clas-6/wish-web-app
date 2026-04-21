@@ -97,10 +97,15 @@ const syncAuthState = () => {
     document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
 
     // Conditional Redirection Logic (Protected Routes)
-    const path = window.location.pathname;
-    if (loggedIn && (path.includes('login.html') || path.includes('register.html'))) { // If logged in, don't show login/register
+    const path = window.location.pathname.split('/').pop();
+    const publicPages = ['login.html', 'register.html'];
+    const protectedPages = ['dashboard.html', 'create-wish.html'];
+
+    if (loggedIn && publicPages.includes(path)) { 
+        // If logged in, don't show login/register
         window.location.href = 'dashboard.html';
-    } else if (!loggedIn && (path.includes('dashboard.html') || path.includes('create-wish.html'))) { // If not logged in, protect certain pages
+    } else if (!loggedIn && protectedPages.includes(path)) { 
+        // If not logged in, protect certain pages
         window.location.href = 'login.html';
     }
 };
