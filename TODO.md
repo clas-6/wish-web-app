@@ -1,12 +1,14 @@
 # WISH Project Roadmap 💛
 
-## 🎨 Frontend Refinements (UI/UX)
+## 🎨 Frontend Refinements
 - [x] Rebrand to "WISH" and implement Glassmorphism design.
 - [x] Implement Light/Dark mode toggle.
 - [x] Add shimmer loading states for Firestore data.
 - [x] **Custom Toasts**: Replace `alert()` in `utils.js` with a non-blocking toast notification system.
 - [x] **Form Validation**: Add real-time validation (phone number format, minimum amounts) in `create-wish.html`.
-- [x] **Empty States**: Design better "No wishes found" graphics for the Browse and Dashboard pages.
+- [x] **Refined UI**: Implemented enhanced Empty States and dynamic Dashboard statistics.
+- [x] **Seasonal Themes**: Added detection logic for Valentine, New Year, and special occasions.
+- [x] **Countdown Timer**: Implemented hero section timer for upcoming seasons.
 - [x] **Confetti**: Trigger celebration on 100% wish fulfillment.
 
 ## 🛡️ Security & Infrastructure

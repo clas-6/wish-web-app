@@ -65,6 +65,22 @@
 <section class="min-h-[70vh] md:min-h-[80vh] flex items-center relative overflow-hidden">
     <div class="max-w-5xl mx-auto px-6 pt-20 pb-24 text-center relative z-10">
         
+        <!-- Countdown Timer -->
+        <div id="occasion-countdown" class="mb-10 hidden animate-fade-in">
+            <div class="inline-flex flex-col items-center px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md">
+                <span id="countdown-label" class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-50 mb-3">Countdown to ...</span>
+                <div class="flex gap-4 sm:gap-6 text-2xl sm:text-3xl font-bold text-accent tabular-nums">
+                    <div class="flex flex-col"><span id="cd-days">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Days</span></div>
+                    <span class="opacity-30 mt-[-4px]">:</span>
+                    <div class="flex flex-col"><span id="cd-hours">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Hours</span></div>
+                    <span class="opacity-30 mt-[-4px]">:</span>
+                    <div class="flex flex-col"><span id="cd-minutes">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Mins</span></div>
+                    <span class="opacity-30 mt-[-4px]">:</span>
+                    <div class="flex flex-col"><span id="cd-seconds">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Secs</span></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Main Headline -->
         <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold leading-tight text-inherit">
             Stay connected<br>with a <span class="text-accent">quiet wish</span>.

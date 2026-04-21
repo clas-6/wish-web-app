@@ -1,4 +1,5 @@
 import { apiRequest, showAlert, toggleLoading, triggerConfetti, isAuthenticated } from './utils.js';
+import { FINANCIAL, ENDPOINTS, WISH_TYPES } from './constants.js';
 import { fetchMyWishes, fetchAllWishes } from './wishes.js';
 
 let currentWishId = null;
@@ -30,7 +31,7 @@ window.openGrantModal = (id, remaining, type, network) => {
     updatePayAmount(remaining);
 
     // Only show partial for Airtime as per requirements
-    if (type === 'AIRTIME') {
+    if (type === WISH_TYPES.AIRTIME) {
         partialSection.classList.remove('hidden');
     } else {
         partialSection.classList.add('hidden');
@@ -42,8 +43,7 @@ window.openGrantModal = (id, remaining, type, network) => {
 
 const updatePayAmount = (amount) => {
     // Add platform fee (Option 2: ₦10 flat fee)
-    const fee = 10;
-    const total = Number(amount) + fee;
+    const total = Number(amount) + FINANCIAL.PLATFORM_FEE;
     document.getElementById('modal-pay-amount').innerText = `₦${total}`;
 };
 
@@ -84,7 +84,7 @@ const simulateLocalGrant = async (amount) => {
 
 // Add a debug message if on localhost
 if (location.hostname === "localhost") {
-    console.log("🛠️ WISH Dev Mode: 'Confirm & Pay' will simulate a successful grant for frontend testing.");
+    console.log(" WISH Dev Mode: 'Confirm & Pay' will simulate a successful grant for frontend testing.");
 }
 // =================================================================
 
@@ -93,7 +93,7 @@ document.getElementById('confirm-grant')?.addEventListener('click', async () => 
     const amount = Number(document.getElementById('grant-amount').value);
 
     if (!isAuthenticated()) { showAlert("Please login to grant wishes", 'error'); return; }
-    if (amount < 100) { showAlert("Minimum grant is ₦100", 'error'); return; }
+    if (amount < FINANCIAL.MIN_AMOUNT) { showAlert(`Minimum grant is ₦${FINANCIAL.MIN_AMOUNT}`, 'error'); return; }
     if (amount > currentRemaining) { showAlert("Amount exceeds remaining wish amount", 'error'); return; }
 
     // If testing locally, bypass the real cloud function and Paystack
@@ -104,7 +104,7 @@ document.getElementById('confirm-grant')?.addEventListener('click', async () => 
 
     try {
         toggleLoading(btn, true, 'Processing...');
-        const data = await apiRequest('/payments/initialize/', { // Partner's Django API endpoint
+        const data = await apiRequest(ENDPOINTS.PAYMENTS_INIT, { // Partner's Django API endpoint
             method: 'POST',
             body: JSON.stringify({ wish_id: currentWishId, amount })
         });

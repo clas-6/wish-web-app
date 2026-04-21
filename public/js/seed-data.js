@@ -1,4 +1,5 @@
 import { apiRequest } from './utils.js';
+import { OCCASION_CONFIG, WISH_CATEGORIES } from './constants.js';
 
 const dummyWishes = [
     {
@@ -39,13 +40,56 @@ const dummyWishes = [
     }
 ];
 
+const getActiveOccasion = () => {
+    const now = new Date();
+    const month = now.getMonth() + 1; // 1-12
+    const day = now.getDate();
+
+    for (const key in OCCASION_CONFIG) {
+        const config = OCCASION_CONFIG[key];
+        const isCrossingYear = config.start.month > config.end.month;
+
+        const isActive = isCrossingYear 
+            ? (month === config.start.month && day >= config.start.day) || (month === config.end.month && day <= config.end.day)
+            : (month === config.start.month && day >= config.start.day && day <= config.end.day);
+
+        if (isActive) return key;
+    }
+    return null;
+};
+
 export const seedDummyWishes = async () => {
     if (location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
-        console.error("⛔ Seeding is only permitted on localhost.");
+        console.error(" Seeding is only permitted on localhost.");
         return;
     }
-    console.log("🚀 Seeding dummy wishes...");
-    for (const wish of dummyWishes) {
+
+    console.log(" Seeding dummy wishes...");
+    
+    const activeOccasion = getActiveOccasion();
+    const wishesToSeed = [...dummyWishes];
+
+    if (activeOccasion) {
+        const occasionMessages = {
+            VALENTINE: "I'd love some airtime to call my partner tonight and share some love. 💖",
+            NEW_YEAR: "Starting the year with some data to stay in touch with family and friends. Happy New Year! 🎆",
+        };
+
+        wishesToSeed.push({
+            uid: "occasion_user",
+            type: "AIRTIME",
+            network: "MTN",
+            category: WISH_CATEGORIES[activeOccasion],
+            total_amount: 1000,
+            amount_paid: 0,
+            remaining_amount: 1000,
+            phone: "08033998877",
+            message: occasionMessages[activeOccasion] || "Special occasion wish! 💛",
+            status: "OPEN"
+        });
+    }
+
+    for (const wish of wishesToSeed) {
         try {
             await apiRequest('/wishes/', {
                 method: 'POST',
@@ -55,7 +99,7 @@ export const seedDummyWishes = async () => {
             console.error("Failed to seed wish:", e);
         }
     }
-    console.log("✅ Seeding complete! Refresh the page to see the new wishes.");
+    console.log("Seeding complete! Refresh the page to see the new wishes.");
 };
 
 // Expose to window for easy console access

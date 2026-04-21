@@ -2,7 +2,7 @@
 
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+  BASE_URL: 'http://localhost:8000/api',
   TIMEOUT: 10000, // 10 seconds
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000, // 1 second
@@ -10,8 +10,8 @@ export const API_CONFIG = {
 
 // Application Settings
 export const APP_CONFIG = {
-  APP_NAME: import.meta.env.VITE_APP_NAME || 'WISH',
-  ENV: import.meta.env.VITE_APP_ENV || 'development',
+  APP_NAME: 'WISH',
+  ENV: 'development',
   VERSION: '1.0.0',
 };
 
@@ -130,6 +130,8 @@ export const UI_CONFIG = {
   LOADING_TEXT: 'Loading...',
   CONFETTI_PARTICLES: 150,
   CONFETTI_SPREAD: 70,
+  PULL_THRESHOLD: 80, // Distance in px before refresh triggers
+  PULL_RESISTANCE: 0.4, // How "heavy" the pull feels
 };
 
 // Date/Time Configuration
@@ -137,6 +139,20 @@ export const DATE_CONFIG = {
   LOCALE: 'en-NG',
   DATE_FORMAT: { month: 'short', day: 'numeric', year: 'numeric' },
   SHORT_DATE_FORMAT: { month: 'short', day: 'numeric' },
+};
+
+// Occasion Theme Configuration
+export const OCCASION_CONFIG = {
+  VALENTINE: {
+    id: 'valentine',
+    start: { month: 2, day: 7 }, // Feb 7
+    end: { month: 2, day: 15 }   // Feb 15
+  },
+  NEW_YEAR: {
+    id: 'newyear',
+    start: { month: 12, day: 28 }, // Dec 28
+    end: { month: 1, day: 5 }      // Jan 5
+  }
 };
 
 // Feature Flags (for gradual rollout)
