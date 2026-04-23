@@ -12,14 +12,14 @@
 - [x] **Confetti**: Trigger celebration on 100% wish fulfillment.
 
 ## 🛡️ Security & Infrastructure
-- [ ] **Django API Design**: Finalize REST endpoints for Wishes, Profiles, and Transactions.
-- [ ] **JWT Auth**: Implement secure token-based authentication (DRF SimpleJWT).
+- [ ] **FastAPI API Design**: Finalize REST endpoints for Wishes, Profiles, and Transactions.
+- [ ] **JWT Auth**: Implement secure token-based authentication using OAuth2 with Password flow.
 - [x] **Local Dev Bypass**: Frontend simulation mode active for testing UI/UX without a live backend.
 - [ ] **Slug System**: Implement a slug-based URL system (e.g., /wish/quiet-yellow-sun) to replace raw database IDs for enhanced anonymity.
 
 ## 🔗 API Endpoint Map (For Partner)
-- `POST /api/token/` -> `{ email, password }` returns `{ access, refresh }`
-- `POST /api/register/` -> `{ email, password }`
+- `POST /api/users/token` -> `{ username, password }` returns `{ access_token, token_type }`
+- `POST /api/users/register` -> `{ email, password }`
 - `GET  /api/wishes/` -> Returns array of all open wishes
 - `POST /api/wishes/` -> `{ type, network, category, total_amount, phone, message }`
 - `GET  /api/wishes/mine/` -> Returns array of wishes owned by current user
@@ -28,11 +28,11 @@
 
 ## 💡 Technical Notes for Partner (Backend Requirements)
 > *Crucial logic implemented in frontend that needs backend parity:*
-- **Rolling Weekly Limit**: Django must enforce the **₦5,000 weekly limit** per user in the `Wish` model's save method or serializer validation.
-- **CORS Policy**: Enable `django-cors-headers` to allow the frontend to communicate with the API during development.
+- **Rolling Weekly Limit**: FastAPI must enforce the **₦5,000 weekly limit** per user in the wish creation service.
+- **CORS Policy**: Enable `fastapi.middleware.cors` to allow the frontend to communicate with the API.
 - **Field Naming**: Use `total_amount` for the wish goal and `amount_paid` for current progress to match frontend templates.
 
-## 💳 Payments & Fulfillment (Django Integration)
+## 💳 Payments & Fulfillment (FastAPI Integration)
 - [ ] **Paystack Integration**: Initialize transactions and handle verification via server-side requests.
 - [ ] **Shago VTU Provider**:
     - [ ] Securely store Shago API keys in `.env` or Django Secrets.

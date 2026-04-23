@@ -9,7 +9,7 @@ A minimalist, quiet, and semi-anonymous platform designed to facilitate the requ
 - **Modern Glassmorphism UI**: A sleek, translucent interface built with Tailwind CSS and custom CSS variables.
 - **Adaptive Theming**: Full support for native Light and Dark modes with smooth transitions.
 - **Anonymous Gifting**: Grant airtime or data wishes without revealing your identity to the recipient.
-- **Secure Payments**: Integration ready for Paystack for reliable transaction processing.
+- **Secure Payments**: Integration ready for Paystack via the FastAPI backend.
 - **Automated Fulfillment**: Integration ready for Shago VTU API for automated airtime/data delivery.
 - **Real-time Dashboard**: Track your "Kindness Impact" and manage active wishes via a secure REST API.
 - **Performance Focused**: Optimized with shimmer loading states (Skeleton screens) and responsive design for all devices.
@@ -17,18 +17,25 @@ A minimalist, quiet, and semi-anonymous platform designed to facilitate the requ
 ## 🚀 Tech Stack
 
 - **Frontend**: HTML5, Tailwind CSS, Vanilla JavaScript (ES Modules).
-- **Backend**: Django REST Framework (JWT Authentication).
+- **Backend**: FastAPI (Python 3.10+).
+- **Database**: PostgreSQL (Production) / SQLite (Development).
 - **Fulfillment**: VTU API Integration.
+
+## 📂 Project Structure
+```text
+wish-web-app/
+├── frontend/             # Vanilla JS Frontend
+│   └── public/           # Static assets, HTML, CSS, JS
+├── backend/              # FastAPI Backend
+└── README.md
+```
 
 ## 🛠️ Setup & Installation
 
-### Prerequisites
-- A local web server (e.g., Live Server for VS Code).
-
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/wish-app.git
-cd wish-app
+git clone https://github.com/your-username/wish-platform.git
+cd wish-platform
 ```
 
 ### 2. Configure API Endpoint

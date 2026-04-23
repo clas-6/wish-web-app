@@ -6,13 +6,20 @@
 node_modules/
 .DS_Store
 dist/
+frontend/dist/
 
-# Python/Django (For your partner)
+# Python/FastAPI (Backend)
 __pycache__/
 *.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+env/
+
+# Database
+*.sqlite3
 
 # Environment variables and secrets
 .env
 .env.*
 !.env.example
-db.sqlite3
