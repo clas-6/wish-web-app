@@ -20,8 +20,16 @@ export const apiRequest = async (endpoint, options = {}) => {
         ...options.headers
     };
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
+
     try {
-        const response = await fetch(`${API_BASE_URL}${endpoint}`, { ...options, headers });
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, { 
+            ...options, 
+            headers,
+            signal: controller.signal 
+        });
+        clearTimeout(timeoutId);
         
         // Handle "No Content" responses
         if (response.status === 204) return {};
@@ -37,10 +45,20 @@ export const apiRequest = async (endpoint, options = {}) => {
                 logoutUser();
                 throw new Error("Session expired. Please log in again.");
             }
-            throw new Error(data?.detail || data?.message || `Request failed with status ${response.status}`);
+            
+            // FastAPI usually returns errors in a 'detail' field. 
+            // Sometimes 'detail' is an array of validation errors.
+            const errorMessage = Array.isArray(data?.detail) 
+                ? data.detail.map(err => `${err.loc[1]}: ${err.msg}`).join(', ')
+                : data?.detail || data?.message || `Error ${response.status}`;
+                
+            throw new Error(errorMessage);
         }
         return data;
     } catch (error) {
+        if (error.name === 'AbortError') {
+            throw new Error("Request timed out. The server is taking too long to respond.");
+        }
         // Handle network errors (DNS, offline, etc.)
         if (error.message === 'Failed to fetch') {
             throw new Error("Unable to connect to the server. Please check your internet or try again later.");

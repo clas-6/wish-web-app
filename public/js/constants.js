@@ -31,6 +31,16 @@ export const VALIDATION = {
   MESSAGE_MAX_LENGTH: 200,
 };
 
+// Password Strength Configuration
+export const PASSWORD_STRENGTH = {
+  LEVELS: [
+    { label: 'Weak', color: 'bg-red-500', text: 'text-red-500', width: '25%' },
+    { label: 'Fair', color: 'bg-orange-500', text: 'text-orange-500', width: '50%' },
+    { label: 'Good', color: 'bg-yellow-500', text: 'text-yellow-500', width: '75%' },
+    { label: 'Strong', color: 'bg-green-500', text: 'text-green-500', width: '100%' }
+  ]
+};
+
 // Network Providers
 export const NETWORKS = {
   MTN: 'MTN',
@@ -65,19 +75,19 @@ export const WISH_STATUS = {
 // API Endpoints
 export const ENDPOINTS = {
   // Authentication
-  TOKEN: '/token/',
-  REGISTER: '/register/',
-  REFRESH: '/token/refresh/',
+  TOKEN: '/users/token',      // FastAPI common pattern
+  REGISTER: '/users/register',
+  REFRESH: '/users/refresh',
   
   // Wishes
-  WISHES: '/wishes/',
-  WISHES_MINE: '/wishes/mine/',
-  WISHES_ALLOWANCE: '/wishes/allowance/',
+  WISHES: '/wishes',
+  WISHES_MINE: '/wishes/mine',
+  WISHES_ALLOWANCE: '/wishes/allowance',
   
   // Payments
-  PAYMENTS_INIT: '/payments/initialize/',
-  PAYMENTS_VERIFY: '/payments/verify/',
-  PAYMENTS_CALLBACK: '/payments/callback/',
+  PAYMENTS_INIT: '/grants/initialize',
+  PAYMENTS_VERIFY: '/grants/verify',
+  PAYMENTS_CALLBACK: '/grants/callback',
 };
 
 // Toast Notification Types
@@ -97,6 +107,7 @@ export const ERROR_MESSAGES = {
   AUTHENTICATION_REQUIRED: 'Please log in to perform this action',
   PAYMENT_FAILED: 'Payment failed. Please try again.',
   GENERIC_ERROR: 'Something went wrong. Please try again later.',
+  PASSWORD_MISMATCH: 'Passwords do not match.',
   SERVER_ERROR: 'Server error. Our team has been notified.',
 };
 
