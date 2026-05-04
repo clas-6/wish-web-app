@@ -3,28 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - WISH</title>
+    <title>History - WISH</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' http://localhost:3000;">
 </head>
-<body class="flex flex-col min-h-screen transition-colors duration-300">
-    <!-- Navbar -->
+<body class="bg-[#f8fafc]">
+
     <nav class="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <img src="img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
+                    <img src="/frontend/public/img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
                     <a href="index.html" class="text-inherit font-semibold text-xl tracking-tight">WISH</a>
                 </div>
+                
+                <div class="hidden lg:flex items-center gap-1 text-[14px] font-medium nav-links-desktop">
+                    <a href="index.html" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Home</a>
+                    <a href="browse.html?filter=ALL" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">All</a>
+                    <a href="browse.html?filter=DATA" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Data</a>
+                    <a href="browse.html?filter=AIRTIME" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Airtime</a>
+                    <a href="browse.html?filter=URGENT" class="px-4 py-2 rounded-xl bg-[#ffecec] text-[#d92d20] hover:opacity-90 transition-all">Urgent ⚡</a>
+                    <a href="browse.html?filter=CELEBRATION" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Celebrations</a>
+                </div>
+
                 <div id="auth-links" class="flex items-center gap-3 sm:gap-4">
+                    <!-- Mobile Nav Toggle -->
                     <div class="relative lg:hidden">
                         <button id="mobile-menu-btn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f2f4f7] text-[#667085] hover:bg-[#eaecf0] transition">
                             <i class="fas fa-bars"></i>
                         </button>
                         
-                        <div id="mobile-dropdown" class="mobile-dropdown-closed absolute top-12 right-0 w-56 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 z-[60] shadow-2xl">
+                        <div id="mobile-dropdown" class="mobile-dropdown-closed absolute top-12 right-0 w-56 bg-white border border-[#f0f0f0] rounded-2xl p-2 z-[60] shadow-2xl">
                             <div class="flex flex-col gap-1">
                                 <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
                                     <i class="fas fa-home w-5 text-center opacity-70"></i> <span>Home</span>
@@ -38,6 +48,9 @@
                                 <a href="browse.html?filter=AIRTIME" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
                                     <i class="fas fa-phone w-5 text-center opacity-70"></i> <span>Airtime</span>
                                 </a>
+                                <a href="browse.html?filter=URGENT" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#ffecec] transition text-[#d92d20]">
+                                    <i class="fas fa-bolt w-5 text-center"></i> <span>Urgent</span>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -50,44 +63,34 @@
         </div>
     </nav>
 
-    <main class="flex-grow flex items-center justify-center px-4 py-12">
-        <div class="furni-card p-8 w-full max-w-md">
-            <h1 class="text-2xl font-semibold mb-2 text-center">Create an account</h1>
-            <p class="text-sm opacity-70 text-center mb-6">Join quietly. You can always stay anonymous to others.</p>
-            
-            <form id="register-form" class="space-y-6">
-                <div>
-                    <label class="block text-xs font-medium opacity-70 mb-1">Email address</label>
-                    <input type="email" id="email" required class="furni-input w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium opacity-70 mb-1">Password</label>
-                    <input type="password" id="password" required class="furni-input w-full">
-                </div>
-                <div>
-                    <label class="block text-xs font-medium opacity-70 mb-1">Confirm password</label>
-                    <input type="password" id="confirm-password" required class="furni-input w-full">
-                </div>
-                <p class="text-[11px] opacity-70 text-center">Your identity stays private.</p>
-                <button type="submit" class="w-full px-8 py-4 bg-[#FACC15] text-[#1a1a1a] font-semibold rounded-2xl hover:bg-[#eab308] transition-all shadow-md">
-                    Create account
-                </button>
-            </form>
-            
-            <p class="mt-8 text-center opacity-70 text-sm">
-                Already have an account? 
-                <a href="login.html" class="font-medium underline underline-offset-4">Sign in</a>
-            </p>
+    <main class="max-w-2xl mx-auto px-4 py-12">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-[#1a1a1a]">Transaction History</h1>
+            <p class="text-[#667085] text-sm mt-1">A simple log of kindness given and received.</p>
+        </div>
+
+        <div class="furni-card p-6 min-h-[400px]">
+            <div id="history-list-container">
+                <!-- One-liners injected here by wishes.js -->
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="dashboard.html" class="text-sm font-semibold text-blue-600 hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
         </div>
     </main>
 
-    <footer class="bg-[var(--card-bg)] border-t border-[var(--card-border)] py-12 mt-12 text-inherit transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 text-center opacity-60 text-sm">
-            © <span id="current-year"></span> WISH • For customer care: <a href="mailto:team.wishapp@gmail.com" class="underline">team.wishapp@gmail.com</a>
-        </div>
+    <footer class="py-12 text-center opacity-40 text-xs">
+        © WISH • Simple. Honest. Kind.
     </footer>
 
     <script type="module" src="js/utils.js"></script>
     <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        import { fetchTransactionHistory } from './js/wishes.js';
+        document.addEventListener('DOMContentLoaded', fetchTransactionHistory);
+    </script>
 </body>
 </html>

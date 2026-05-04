@@ -1,27 +1,26 @@
 /* Base styles to complement Tailwind */
 :root {
     --font-main: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --primary: #60a5fa;       /* toned down blue */
-    --primary-dark: #1e3a8a;  /* muted deep blue */
-    --accent: #facc15;        /* soft yellow */
-    --bg-page: linear-gradient(135deg, #1e40af, #2563eb, #3b82f6);
-    --text-page: #ffffff;
-    --text-muted: rgba(255, 255, 255, 0.7);
-    --accent-muted: rgba(250, 204, 21, 0.2);
-    --blob-color: rgba(96, 165, 250, 0.3);
-    --card-bg: rgba(255, 255, 255, 0.1);
-    --card-border: rgba(255, 255, 255, 0.2);
+    --primary: #facc15;       /* Primary Action Yellow */
+    --primary-dark: #ca8a04;  
+    --accent: #facc15;        /* Brand Yellow */
+    --bg-page: #f8fafc;       /* Clean Light Grey/Blue Tint */
+    --text-page: #1a1a1a;     /* Deep Grey for readability */
+    --text-muted: #667085;
+    --accent-muted: rgba(250, 204, 21, 0.1);
+    --blob-color: rgba(250, 204, 21, 0.05);
+    --card-bg: #ffffff;
+    --card-border: #f0f0f0;
 }
 
-[data-theme="light"] {
-    --bg-page: #f8fafc;
-    --text-page: #0f172a;
-    --text-muted: #64748b;
-    --accent-muted: rgba(250, 204, 21, 0.1);
-    --blob-color: rgba(96, 165, 250, 0.1);
-    --card-bg: #ffffff;
-    --card-border: #e2e8f0;
-    --primary-dark: #1e40af;
+[data-theme="dark"] {
+    --bg-page: #0A192F; /* Very dark blue */
+    --text-page: #E2E8F0; /* Light grey for readability */
+    --text-muted: #94A3B8; /* Muted grey */
+    --accent-muted: rgba(250, 204, 21, 0.2);
+    --blob-color: rgba(250, 204, 21, 0.08); /* Slightly more visible blob */
+    --card-bg: #112240; /* Slightly lighter dark blue for cards */
+    --card-border: #2A3B5B; /* Darker blue for borders */
 }
 
 body {
@@ -33,8 +32,9 @@ body {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-button, input, select, textarea {
+button, input, select, textarea, a {
     font-family: inherit;
+    transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 h1, h2, h3 {
@@ -94,21 +94,85 @@ p {
     letter-spacing: -0.025em;
 }
 
-.furni-nav {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-}
-
 .furni-card {
     background: var(--card-bg);
-    backdrop-filter: blur(12px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
+    border-radius: 24px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.furni-card:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    transform: translateY(-6px) scale(1.01);
+    border-color: var(--primary);
+}
+
+/* Glass Shimmer Button Effect */
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        120deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: all 0.6s;
+}
+
+.btn-shimmer:hover::before {
+    left: 100%;
+}
+
+/* Pulse for Urgent elements */
+@keyframes pulse-accent {
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+
+.animate-pulse-accent {
+    animation: pulse-accent 2s infinite;
+}
+
+/* Staggered Entrance */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-in > * {
+    opacity: 0;
+    animation: fadeInUp 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+.stagger-in > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-in > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-in > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-in > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-in > *:nth-child(5) { animation-delay: 0.5s; }
+
+/* Primary Button Click Scaling Effect */
+button:active, 
+a[class*="bg-"]:active,
+a[class*="bg-[#"]:active {
+    transform: scale(0.97);
 }
 
 .furni-input {
     background: var(--card-bg);
     color: var(--text-page);
-    border: 2px solid var(--card-border);
+    border: 1px solid var(--card-border);
     border-radius: 16px;
     padding: 16px 20px;
     font-size: 16px;
@@ -118,25 +182,6 @@ p {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 20px rgba(96, 165, 250, 0.15), 0 0 0 4px rgba(96, 165, 250, 0.05);
-}
-
-.furni-btn-primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-    color: white;
-    border-radius: 12px;
-    padding: 12px 24px;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.2s;
-}
-
-@media (min-width: 768px) {
-    .furni-btn-primary { border-radius: 16px; padding: 16px 32px; }
-}
-
-.furni-btn-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(96, 165, 250, 0.3);
 }
 
 /* Animations */
@@ -152,6 +197,26 @@ p {
 /* Form focus styles */
 input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+}
+
+/* Mobile Dropdown Animation */
+.mobile-dropdown-closed {
+    max-height: 0 !important;
+    padding: 0 !important;
+    border-width: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+}
+.mobile-dropdown-open {
+    max-height: 500px !important;
+    padding: 0.5rem !important; /* Matches Tailwind p-2 */
+    border-width: 1px !important;
+    opacity: 1;
+    pointer-events: auto;
+    overflow: hidden; /* Still hide overflow during transition */
+    transition: all 0.3s ease-in;
 }
 
 /* Modal animation */
@@ -217,4 +282,53 @@ input:focus, select:focus, textarea:focus {
         transparent 0%, 
         rgba(0, 0, 0, 0.03) 50%, 
         transparent 100%);
+}
+
+/* Wish Card Specifics */
+.wish-badge {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.network-mtn { background: #FFCC00; color: #1a1a1a; }
+.network-glo { background: #008000; color: #ffffff; }
+.network-airtel { background: #E1261C; color: #ffffff; }
+.network-9mobile { background: #006400; color: #ffffff; }
+
+.progress-bar-container {
+    height: 8px;
+    background: rgba(0,0,0,0.05);
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: var(--primary);
+    border-radius: 99px;
+    transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.grant-success-animation {
+    animation: celebrate 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes celebrate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); box-shadow: 0 0 30px rgba(250, 204, 21, 0.4); }
+    100% { transform: scale(1); }
+}
+
+.wish-card-footer {
+    border-top: 1px solid var(--card-border);
+    padding-top: 16px;
+    margin-top: 16px;
 }

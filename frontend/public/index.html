@@ -28,33 +28,54 @@
     <link rel="stylesheet" href="css/style.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' http://localhost:3000;">
 </head>
     <body class="transition-colors duration-300">
 
     <!-- Glassmorphism Navbar -->
-    <nav class="furni-card !rounded-none !border-t-0 !border-x-0 !shadow-sm sticky top-0 z-50">
+    <nav class="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <div class="w-9 h-9 bg-[#FACC15] rounded-2xl flex items-center justify-center text-2xl shadow-inner">💛</div>
-                    <a href="index.html" class="brand-logo text-inherit">WISH</a>
+                    <img src="img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
+                    <a href="index.html" class="text-inherit font-semibold text-xl tracking-tight">WISH</a>
                 </div>
                 
-                <div class="hidden md:flex items-center space-x-8 text-sm">
-                    <a href="browse.html" class="hover:text-[#FACC15] transition">Browse Wishes</a>
-                    <a href="create-wish.html" class="hover:text-[#FACC15] transition">Post a Wish</a>
-                    <a href="dashboard.html" class="hover:text-[#FACC15] transition">My Impact</a>
+                <div class="hidden lg:flex items-center gap-1 text-[14px] font-medium nav-links-desktop">
+                    <a href="browse.html?filter=ALL" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">All</a>
+                    <a href="browse.html?filter=DATA" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Data</a>
+                    <a href="browse.html?filter=AIRTIME" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Airtime</a>
                 </div>
 
-                <div id="auth-links" class="flex items-center gap-4">
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <a href="login.html" class="hidden xs:block text-sm hover:text-[#FACC15] transition">Login</a>
-                    <a href="register.html" 
-                       class="px-4 py-2 sm:px-5 sm:py-2.5 bg-accent text-primary-dark font-semibold rounded-xl sm:rounded-2xl text-xs sm:text-sm hover:opacity-90 transition">
-                        Get Started
-                    </a>
+                <div id="auth-links" class="flex items-center gap-3 sm:gap-4">
+                    <!-- Mobile Nav Toggle -->
+                    <div class="relative lg:hidden">
+                        <button id="mobile-menu-btn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f2f4f7] text-[#667085] hover:bg-[#eaecf0] transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <div id="mobile-dropdown" class="mobile-dropdown-closed absolute top-12 right-0 w-56 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 z-[60] shadow-2xl">
+                            <div class="flex flex-col gap-1">
+                                <a href="browse.html?filter=ALL" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-globe w-5 text-center opacity-70"></i> <span>All Wishes</span>
+                                </a>
+                                <a href="browse.html?filter=DATA" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-wifi w-5 text-center opacity-70"></i> <span>Data</span>
+                                </a>
+                                <a href="browse.html?filter=AIRTIME" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-phone w-5 text-center opacity-70"></i> <span>Airtime</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 sm:gap-4 auth-buttons-container">
+                        <a href="login.html" class="hidden xs:block text-sm text-[#667085] hover:text-[#1a1a1a] transition">Login</a>
+                        <a href="register.html" 
+                           class="px-4 py-2 bg-[#FACC15] text-[#1a1a1a] font-semibold rounded-xl text-xs sm:text-sm hover:bg-[#eab308] transition">
+                            Get Started
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,9 +88,9 @@
         
         <!-- Countdown Timer -->
         <div id="occasion-countdown" class="mb-10 hidden animate-fade-in">
-            <div class="inline-flex flex-col items-center px-8 py-4 rounded-[2rem] bg-white/5 border border-white/10 backdrop-blur-md">
+            <div class="inline-flex flex-col items-center px-8 py-4 rounded-[2rem] furni-card">
                 <span id="countdown-label" class="text-[10px] uppercase tracking-[0.2em] font-bold opacity-50 mb-3">Countdown to ...</span>
-                <div class="flex gap-4 sm:gap-6 text-2xl sm:text-3xl font-bold text-accent tabular-nums">
+                <div class="flex gap-4 sm:gap-6 text-2xl sm:text-3xl font-bold text-[#1a1a1a] tabular-nums">
                     <div class="flex flex-col"><span id="cd-days">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Days</span></div>
                     <span class="opacity-30 mt-[-4px]">:</span>
                     <div class="flex flex-col"><span id="cd-hours">00</span><span class="text-[9px] uppercase opacity-40 font-bold tracking-wider mt-1">Hours</span></div>
@@ -88,25 +109,25 @@
 
         <!-- Subtext -->
         <p class="mt-6 sm:mt-8 text-base sm:text-lg md:text-xl opacity-80 max-w-2xl mx-auto text-inherit">
-            Ask for or grant small airtime and data needs.<br>
+            Request or grant small airtime and data needs.<br>
             Simple, honest and kind.
         </p>
 
         <!-- Buttons -->
         <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mt-10 sm:mt-12">
             <a href="browse.html" 
-               class="px-8 py-4 sm:px-10 sm:py-5 bg-white text-primary-dark font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-white/90 transition-all">
+               class="px-8 py-4 sm:px-10 sm:py-5 bg-[#1a1a1a] text-white font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-black transition-all">
                 Browse Wishes
             </a>
-            <a href="create-wish.html" 
-               class="px-8 py-4 sm:px-10 sm:py-5 bg-transparent border-2 border-[var(--card-border)] text-inherit font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-white/10 transition-all">
+            <a href="register.html" id="hero-get-started"
+               class="px-8 py-4 sm:px-10 sm:py-5 bg-white border border-[#e2e8f0] text-[#1a1a1a] font-semibold rounded-2xl sm:rounded-3xl text-base sm:text-lg hover:bg-[#f9fafb] transition-all">
                 Get Started
             </a>
         </div>
 
         <!-- Trust line -->
         <p class="mt-10 opacity-60 text-sm text-inherit">
-            Completely anonymous • Real kindness in Nigeria
+            Completely anonymous • Spread kindness to the world
         </p>
     </div>
 
@@ -116,24 +137,40 @@
 </section>
 
         <!-- How it Works -->
-        <section class="py-12 sm:py-16 bg-white/10 backdrop-blur-lg border-t border-b border-white/20">
+        <section class="py-16 sm:py-24 bg-[var(--card-bg)] border-t border-b border-[var(--card-border)] transition-colors duration-300">
             <div class="max-w-5xl mx-auto px-4">
-                <h2 class="text-center text-2xl sm:text-3xl font-semibold mb-8 sm:mb-12">How WISH Works</h2>
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-inherit">How WISH Works</h2>
+                    <p class="text-[var(--text-muted)] mt-2">Simple, secure, and community-driven.</p>
+                </div>
+                
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
-                        <div class="text-4xl mb-4">✨</div>
+                    <!-- Step 1 -->
+                    <div class="furni-card !rounded-3xl p-8 text-center relative">
+                        <span class="absolute -top-3 -left-3 w-8 h-8 bg-accent text-primary-dark font-bold rounded-full flex items-center justify-center text-xs shadow-lg">1</span>
+                        <div class="text-4xl mb-6 text-accent">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
                         <h3 class="font-semibold text-xl mb-2">Make a Wish</h3>
-                        <p class="opacity-70">Request a small amount of airtime or data you truly need.</p>
+                        <p class="text-[var(--text-muted)]">Request a small amount of airtime or data you truly need.</p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
-                        <div class="text-4xl mb-4">🤲</div>
+                    <!-- Step 2 -->
+                    <div class="furni-card !rounded-3xl p-8 text-center relative">
+                        <span class="absolute -top-3 -left-3 w-8 h-8 bg-accent text-primary-dark font-bold rounded-full flex items-center justify-center text-xs shadow-lg">2</span>
+                        <div class="text-4xl mb-6 text-accent">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
                         <h3 class="font-semibold text-xl mb-2">Someone Grants It</h3>
-                        <p class="opacity-70">A kind stranger pays for it anonymously.</p>
+                        <p class="text-[var(--text-muted)]">A kind stranger grants your wish and pays for it anonymously.</p>
                     </div>
-                    <div class="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-8 text-center">
-                        <div class="text-4xl mb-4">🌙</div>
+                    <!-- Step 3 -->
+                    <div class="furni-card !rounded-3xl p-8 text-center relative">
+                        <span class="absolute -top-3 -left-3 w-8 h-8 bg-accent text-primary-dark font-bold rounded-full flex items-center justify-center text-xs shadow-lg">3</span>
+                        <div class="text-4xl mb-6 text-accent">
+                            <i class="fas fa-mobile-screen-button"></i>
+                        </div>
                         <h3 class="font-semibold text-xl mb-2">Receive Quietly</h3>
-                        <p class="opacity-70">No names. No faces. Just kindness delivered.</p>
+                        <p class="text-[var(--text-muted)]">Your airtime or data is delivered automatically. No names, just kindness.</p>
                     </div>
                 </div>
             </div>
@@ -159,9 +196,9 @@
         </section>
     </main>
 
-    <footer class="bg-white/5 backdrop-blur-md border-t border-white/10 py-12 mt-12">
+    <footer class="bg-[var(--card-bg)] border-t border-[var(--card-border)] py-12 mt-12 text-inherit transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 text-center opacity-60 text-sm">
-            © 2026 WISH • A quiet place for kindness in Nigeria
+            © <span id="current-year"></span> WISH • For customer care: <a href="mailto:team.wishapp@gmail.com" class="underline">team.wishapp@gmail.com</a>
         </div>
     </footer>
 

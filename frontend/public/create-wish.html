@@ -7,112 +7,100 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' http://localhost:3000;">
 </head>
 <body class="transition-colors duration-300">
 
-    <!-- Glass Navbar -->
-    <nav class="furni-card !rounded-none !border-t-0 !border-x-0 sticky top-0 z-50">
+    <!-- Navbar -->
+    <nav class="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-[#FACC15] rounded-2xl flex items-center justify-center text-2xl">💛</div>
-                    <a href="index.html" class="brand-logo text-inherit">WISH</a>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <img src="img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
+                    <a href="index.html" class="text-inherit font-semibold text-xl tracking-tight">WISH</a>
                 </div>
-                
-                <div id="auth-links" class="flex items-center gap-4">
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <a href="login.html" class="hidden xs:block text-sm hover:text-[#FACC15] transition">Login</a>
-                    <a href="register.html" 
-                       class="px-4 py-2 sm:px-5 sm:py-2.5 bg-accent text-primary-dark font-semibold rounded-xl sm:rounded-2xl text-xs sm:text-sm hover:opacity-90 transition">
-                        Get Started
-                    </a>
+                <div id="auth-links" class="flex items-center gap-3 sm:gap-4">
+                    <div class="relative lg:hidden">
+                        <button id="mobile-menu-btn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f2f4f7] text-[#667085] hover:bg-[#eaecf0] transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <div id="mobile-dropdown" class="mobile-dropdown-closed absolute top-12 right-0 w-56 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 z-[60] shadow-2xl">
+                            <div class="flex flex-col gap-1">
+                                <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-home w-5 text-center opacity-70"></i> <span>Home</span>
+                                </a>
+                                <a href="browse.html?filter=ALL" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-globe w-5 text-center opacity-70"></i> <span>All Wishes</span>
+                                </a>
+                                <a href="browse.html?filter=DATA" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-wifi w-5 text-center opacity-70"></i> <span>Data</span>
+                                </a>
+                                <a href="browse.html?filter=AIRTIME" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-phone w-5 text-center opacity-70"></i> <span>Airtime</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 sm:gap-4 auth-buttons-container">
+                        <!-- Dynamic content -->
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-2xl mx-auto px-4 py-12">
-        <div class="furni-card overflow-hidden shadow-2xl">
+        <div class="furni-card overflow-hidden">
             
             <!-- Header -->
             <div class="px-8 py-8 border-b border-[var(--card-border)]">
-                <h1 class="text-3xl font-semibold flex items-center gap-3 text-inherit">
-                    <span>Make a Wish</span>
-                    <span class="text-2xl">💛</span>
-                </h1>
-                <p class="opacity-70 mt-2">Ask for a little help anonymously. Each user has a ₦5,000 weekly limit to ensure everyone gets a chance.</p>
-                <div id="weekly-allowance-display" class="mt-4 text-sm bg-white/5 inline-block px-4 py-2 rounded-xl border border-white/10 hidden">
-                    Loading allowance...
+                <h1 id="form-title" class="text-3xl font-bold text-gray-800">Create a Wish</h1>
+                <div id="weekly-allowance-display" class="mt-6 p-5 bg-[#f9fafb] border border-[#f0f0f0] rounded-2xl hidden">
                 </div>
             </div>
 
-            <form id="create-wish-form" class="p-8 space-y-8">
-                
-                <div class="grid md:grid-cols-3 gap-6">
+            <form id="create-wish-form" class="p-8 space-y-6 bg-white">
+                <div class="space-y-4 text-gray-700">
                     <div>
-                        <label class="block text-sm font-medium opacity-70 mb-2">Type</label>
-                        <select id="type" required 
-                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
-                            <option value="AIRTIME">Airtime</option>
-                            <option value="DATA">Data</option>
+                        <label class="block text-sm font-medium mb-1">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="08012345678" required 
+                               class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        <p id="phone-error" class="text-red-400 text-xs mt-1 hidden">Please enter a valid Nigerian phone number</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Select Network</label>
+                        <select id="network-select" required class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none cursor-pointer">
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium opacity-70 mb-2">Network</label>
-                        <select id="network" required 
-                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
-                            <option value="MTN">MTN</option>
-                            <option value="AIRTEL">Airtel</option>
-                            <option value="GLO">Glo</option>
-                            <option value="9MOBILE">9mobile</option>
+                        <label class="block text-sm font-medium mb-1">Select Type</label>
+                        <select id="type-select" required class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none cursor-pointer">
                         </select>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium opacity-70 mb-2">Category</label>
-                        <select id="category" required 
-                                class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
-                            <option value="KINDNESS">Kindness</option>
-                            <option value="CELEBRATION">Celebration</option>
-                            <option value="EASTER">Easter</option>
-                            <option value="VALENTINE">Valentine</option>
-                            <option value="NEW YEAR">New Year</option>
+                    <div id="plan-section" class="hidden">
+                        <label class="block text-sm font-medium mb-1">Select Plan</label>
+                        <select id="plan-select" class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition appearance-none cursor-pointer">
                         </select>
                     </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-sm font-medium opacity-70 mb-2">Amount (₦)</label>
-                        <input type="number" id="amount" required min="100" step="50" placeholder="500"
-                               class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
-                        <p id="amount-error" class="text-red-400 text-xs mt-1 hidden">Amount must be at least ₦100</p>
+                    <div id="amount-section">
+                        <label class="block text-sm font-medium mb-1">Amount (₦)</label>
+                        <input type="number" id="amount" placeholder="eg: 500" 
+                               class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        <p id="amount-error" class="text-red-400 text-xs mt-1 hidden"></p>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium opacity-70 mb-2">Phone Number</label>
-                        <input type="tel" id="phone" required maxlength="11" placeholder="08012345678" 
-                               class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl text-inherit focus:border-accent outline-none transition">
-                        <p id="phone-error" class="text-red-400 text-xs mt-1 hidden">Please enter a valid 11-digit Nigerian phone number</p>
+                        <label class="block text-sm font-medium mb-1">Message (Optional)</label>
+                        <textarea id="message" maxlength="200" placeholder="Tell a short, quiet story..."
+                                  class="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition h-24 resize-none"></textarea>
+                        <div class="text-right text-[10px] opacity-40"><span id="message-counter">0</span>/200</div>
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-medium opacity-70 mb-2">Why do you need this? (Optional)</label>
-                    <textarea id="message" rows="4" maxlength="200" placeholder="I need it to submit my assignment tomorrow..." 
-                              class="w-full px-5 py-4 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-3xl text-inherit focus:border-accent outline-none resize-none"></textarea>
-                    <p class="text-xs opacity-60 mt-1 text-right"><span id="message-counter">0</span>/200</p>
-                </div>
-
-                <div class="pt-6">
-                    <button type="submit" 
-                            class="w-full bg-accent text-primary-dark font-bold py-5 rounded-3xl text-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center gap-3">
-                        <i class="fas fa-paper-plane"></i>
-                        Submit My Wish
+                <div class="pt-8">
+                    <button type="submit" class="w-full bg-[#FACC15] text-[#1a1a1a] font-bold py-5 rounded-xl text-lg hover:bg-[#eab308] transition-all shadow-lg">
+                        Create Wish
                     </button>
-                    <p class="text-center opacity-60 text-xs mt-6">
-                        Your phone number is private and will only be used to deliver the airtime/data.
-                    </p>
                 </div>
             </form>
         </div>
@@ -122,6 +110,12 @@
             This wish will be visible anonymously until it is fully granted.
         </div>
     </main>
+
+    <footer class="bg-[var(--card-bg)] border-t border-[var(--card-border)] py-12 mt-12 text-inherit transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 text-center opacity-60 text-sm">
+            © <span id="current-year"></span> WISH • For customer care: <a href="mailto:team.wishapp@gmail.com" class="underline">team.wishapp@gmail.com</a>
+        </div>
+    </footer>
 
     <!-- Scripts -->
     <script type="module" src="js/utils.js"></script>

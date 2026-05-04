@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - WISH</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body class="transition-colors duration-300">
+
+    <nav class="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <img src="img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
+                    <a href="index.html" class="text-inherit font-semibold text-xl tracking-tight">WISH</a>
+                </div>
+                
+                <div class="hidden lg:flex items-center gap-1 text-[14px] font-medium nav-links-desktop">
+                    <a href="browse.html?filter=ALL" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">All</a>
+                    <a href="browse.html?filter=DATA" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Data</a>
+                    <a href="browse.html?filter=AIRTIME" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Airtime</a>
+                </div>
+
+                <div id="auth-links" class="flex items-center gap-3 sm:gap-4">
+                    <div class="flex items-center gap-2 sm:gap-4 auth-buttons-container">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-2xl mx-auto px-4 py-12">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-inherit">Settings</h1>
+            <p class="text-[#667085] text-sm mt-1">Manage your preferences and appearance.</p>
+        </div>
+
+        <div class="space-y-6">
+            <!-- Appearance Section -->
+            <div class="furni-card p-6">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-10 h-10 bg-[#f2f4f7] rounded-xl flex items-center justify-center text-[#667085]">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold">Appearance</h2>
+                        <p class="text-xs text-[#667085]">Customize how WISH looks for you.</p>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-[var(--card-bg)] rounded-2xl border border-[var(--card-border)] appearance-item">
+                    <div>
+                        <p class="text-sm font-medium text-inherit">Theme</p>
+                        <p class="text-xs text-[var(--text-muted)]" id="theme-status">Currently: Light Mode</p>
+                    </div>
+                    <div class="flex flex-col gap-2 mt-4">
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="theme-option" value="light" class="form-radio text-[#FACC15] focus:ring-[#FACC15]">
+                            <span class="text-sm text-inherit">Light</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="theme-option" value="dark" class="form-radio text-[#FACC15] focus:ring-[#FACC15]">
+                            <span class="text-sm text-inherit">Dark</span>
+                        </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="radio" name="theme-option" value="system" class="form-radio text-[#FACC15] focus:ring-[#FACC15]">
+                            <span class="text-sm text-inherit">System Default</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="dashboard.html" class="text-sm font-semibold text-[var(--primary)] hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+            </a>
+        </div>
+    </main>
+
+    <footer class="py-12 text-center text-inherit opacity-40 text-xs">
+        © WISH • Simple. Honest. Kind.
+    </footer>
+
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module">
+        import { setTheme } from './js/utils.js';
+        import { THEME_CONFIG, STORAGE_KEYS } from './js/constants.js';
+
+        const statusText = document.getElementById('theme-status');
+        const themeRadios = document.querySelectorAll('input[name="theme-option"]');
+
+        const updateThemeUI = () => {
+            const isDark = document.documentElement.getAttribute('data-theme') === THEME_CONFIG.DARK;
+            const savedPreference = localStorage.getItem(STORAGE_KEYS.THEME) || THEME_CONFIG.SYSTEM;
+
+            statusText.innerText = `Currently: ${isDark ? 'Dark Mode' : 'Light Mode'}`;
+            
+            // Check the appropriate radio button
+            for (const radio of themeRadios) {
+                if (radio.value === savedPreference) {
+                    radio.checked = true;
+                }
+            }
+        };
+
+        themeRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                setTheme(e.target.value);
+                updateThemeUI();
+            });
+        });
+
+        // Listen for system theme changes and update UI if 'system' is selected
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem(STORAGE_KEYS.THEME) || localStorage.getItem(STORAGE_KEYS.THEME) === THEME_CONFIG.SYSTEM) {
+                updateThemeUI(); // Re-evaluate and update UI based on new system preference
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', updateThemeUI);
+    </script>
+</body>
+</html>

@@ -1,5 +1,5 @@
 import { apiRequest, showAlert, toggleLoading, triggerConfetti, isAuthenticated } from './utils.js';
-import { FINANCIAL, ENDPOINTS, WISH_TYPES } from './constants.js';
+import { FINANCIAL, ENDPOINTS, WISH_TYPES, STORAGE_KEYS } from './constants.js';
 import { fetchMyWishes, fetchAllWishes } from './wishes.js';
 
 let currentWishId = null;
@@ -44,17 +44,9 @@ window.openGrantModal = (id, remaining, type, network) => {
 const updatePayAmount = (amount) => {
     // Add platform fee (Option 2: ₦10 flat fee)
     const total = Number(amount) + FINANCIAL.PLATFORM_FEE;
-    document.getElementById('modal-pay-amount').innerText = `₦${total}`;
+    const payAmountEl = document.getElementById('modal-pay-amount');
+    if (payAmountEl) payAmountEl.innerText = `₦${total.toLocaleString()}`;
 };
-
-document.getElementById('grant-amount')?.addEventListener('input', (e) => {
-    updatePayAmount(e.target.value);
-});
-
-document.getElementById('close-modal')?.addEventListener('click', () => {
-    document.getElementById('grant-modal').classList.add('hidden');
-    document.getElementById('grant-modal').classList.remove('flex');
-});
 
 // ====================== LOCAL TESTING BYPASS ======================
 // This allows the frontend dev to simulate a successful grant without a real backend
@@ -88,35 +80,60 @@ if (location.hostname === "localhost") {
 }
 // =================================================================
 
-document.getElementById('confirm-grant')?.addEventListener('click', async () => {
-    const btn = document.getElementById('confirm-grant');
-    const amount = Number(document.getElementById('grant-amount').value);
+const initPaymentListeners = () => {
+    const confirmBtn = document.getElementById('confirm-grant');
+    const grantAmountInput = document.getElementById('grant-amount');
+    const closeModalBtn = document.getElementById('close-modal');
 
-    if (!isAuthenticated()) { showAlert("Please login to grant wishes", 'error'); return; }
-    if (amount < FINANCIAL.MIN_AMOUNT) { showAlert(`Minimum grant is ₦${FINANCIAL.MIN_AMOUNT}`, 'error'); return; }
-    if (amount > currentRemaining) { showAlert("Amount exceeds remaining wish amount", 'error'); return; }
+    confirmBtn?.addEventListener('click', async () => {
+        const amount = Number(grantAmountInput?.value || 0);
 
-    // If testing locally, bypass the real Django API and Paystack
-    if (location.hostname === "localhost") {
-        await simulateLocalGrant(amount);
-        return;
-    }
+        if (!isAuthenticated()) { showAlert("Please login to grant wishes", 'error'); return; }
+        if (amount < FINANCIAL.MIN_AMOUNT) { showAlert(`Minimum grant is ₦${FINANCIAL.MIN_AMOUNT}`, 'error'); return; }
+        if (amount > currentRemaining) { showAlert("Amount exceeds remaining wish amount", 'error'); return; }
 
-    try {
-        toggleLoading(btn, true, 'Processing...');
-        const data = await apiRequest(ENDPOINTS.PAYMENTS_INIT, { // Partner's Django API endpoint
-            method: 'POST',
-            body: JSON.stringify({ wish_id: currentWishId, amount })
-        });
+        try {
+            toggleLoading(confirmBtn, true, 'Processing...');
+            
+            // Security: Send raw amount; backend will add and verify the ₦10 fee
+            const payload = { 
+                wish_id: currentWishId, 
+                amount: amount, // Raw wish amount
+                granter_id: localStorage.getItem(STORAGE_KEYS.USER_ID) 
+            };
 
-        if (data.authorization_url) {
-            window.location.href = data.authorization_url;
-        } else {
-            throw new Error("Failed to get payment URL");
+            const data = await apiRequest(ENDPOINTS.PAYMENTS_INIT, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            if (data.authorization_url) {
+                window.location.href = data.authorization_url;
+            } else {
+                throw new Error("Failed to get payment URL");
+            }
+        } catch (error) {
+            // Dev Mode Bypass: If on localhost and server is unreachable, simulate success
+            if (location.hostname === "localhost" && error.message.includes("Unable to connect")) {
+                console.warn("Dev Mode: Mock Server unreachable. Simulating successful grant.");
+                simulateLocalGrant(amount);
+            } else {
+                showAlert(error.message, 'error');
+            }
+        } finally {
+            toggleLoading(confirmBtn, false);
         }
-    } catch (error) {
-        showAlert(error.message, 'error');
-    } finally {
-        toggleLoading(btn, false);
-    }
-});
+    });
+
+    closeModalBtn?.addEventListener('click', () => {
+        const modal = document.getElementById('grant-modal');
+        modal?.classList.add('hidden');
+        modal?.classList.remove('flex');
+    });
+
+    grantAmountInput?.addEventListener('input', (e) => {
+        updatePayAmount(e.target.value);
+    });
+};
+
+document.addEventListener('DOMContentLoaded', initPaymentListeners);

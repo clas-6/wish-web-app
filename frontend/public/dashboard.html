@@ -7,26 +7,74 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data:; connect-src 'self' http://localhost:3000;">
+    <style>
+        @keyframes pulse-processing {
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.99); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .animate-pulse-processing {
+            animation: pulse-processing 1.5s infinite ease-in-out;
+            border-color: #FACC15 !important;
+        }
+        @keyframes shimmer-fast {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .animate-shimmer-fast {
+            background: linear-gradient(90deg, #1a1a1a 25%, #333333 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: shimmer-fast 1.5s infinite linear;
+        }
+    </style>
 </head>
 <body class="transition-colors duration-300">
 
     <!-- Glass Navbar -->
-    <nav class="furni-card !rounded-none !border-t-0 !border-x-0 sticky top-0 z-50">
+    <nav class="bg-[var(--card-bg)] border-b border-[var(--card-border)] sticky top-0 z-50 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-accent rounded-2xl flex items-center justify-center text-2xl">💛</div>
-                    <a href="index.html" class="brand-logo text-inherit">WISH</a>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <img src="img/img 5.png" alt="WISH Logo" class="w-12 h-12 object-contain">
+                    <a href="index.html" class="text-inherit font-semibold text-xl tracking-tight">WISH</a>
                 </div>
-                <div id="auth-links" class="flex items-center gap-4">
-                    <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 transition">
-                        <i class="fas fa-moon"></i>
-                    </button>
-                    <a href="login.html" class="hidden xs:block text-sm hover:text-[#FACC15] transition">Login</a>
-                    <a href="register.html" 
-                       class="px-4 py-2 sm:px-5 sm:py-2.5 bg-accent text-primary-dark font-semibold rounded-xl sm:rounded-2xl text-xs sm:text-sm hover:opacity-90 transition">
-                        Get Started
-                    </a>
+                
+                <div class="hidden lg:flex items-center gap-1 text-[14px] font-medium nav-links-desktop">
+                    <a href="browse.html?filter=ALL" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">All</a>
+                    <a href="browse.html?filter=DATA" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Data</a>
+                    <a href="browse.html?filter=AIRTIME" class="px-4 py-2 rounded-xl text-[#667085] hover:bg-[#f9fafb] transition-all">Airtime</a>
+                </div>
+
+                <div id="auth-links" class="flex items-center gap-3 sm:gap-4">
+                    <!-- Mobile Nav Toggle -->
+                    <div class="relative lg:hidden">
+                        <button id="mobile-menu-btn" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[#f2f4f7] text-[#667085] hover:bg-[#eaecf0] transition">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <div id="mobile-dropdown" class="mobile-dropdown-closed absolute top-12 right-0 w-56 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-2 z-[60] shadow-2xl">
+                            <div class="flex flex-col gap-1">
+                                <a href="browse.html?filter=ALL" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-globe w-5 text-center opacity-70"></i> <span>All Wishes</span>
+                                </a>
+                                <a href="browse.html?filter=DATA" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-wifi w-5 text-center opacity-70"></i> <span>Data</span>
+                                </a>
+                                <a href="browse.html?filter=AIRTIME" class="flex items-center gap-3 p-3 rounded-xl hover:bg-[#f9fafb] transition text-[#667085]">
+                                    <i class="fas fa-phone w-5 text-center opacity-70"></i> <span>Airtime</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 sm:gap-4 auth-buttons-container">
+                        <a href="login.html" class="hidden xs:block text-sm text-[#667085] hover:text-[#1a1a1a] transition">Login</a>
+                        <a href="register.html" 
+                           class="px-4 py-2 bg-[#FACC15] text-[#1a1a1a] font-semibold rounded-xl text-xs sm:text-sm hover:bg-[#eab308] transition">
+                            Get Started
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,50 +87,60 @@
                 <p class="opacity-70 text-lg mt-2" id="user-email">Welcome back</p>
             </div>
             <div class="mt-6 md:mt-0">
-                <a href="create-wish.html" class="furni-btn-primary block text-center">Make a Wish</a>
+                <a href="create-wish.html" class="px-8 py-4 bg-[#FACC15] text-[#1a1a1a] font-semibold rounded-2xl hover:bg-[#eab308] transition-all block text-center shadow-md">Make a Wish</a>
             </div>
         </div>
 
         <div class="grid lg:grid-cols-12 gap-8">
             
-            <!-- Stats Cards -->
-            <div class="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-                <div class="furni-card p-8">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-accent-muted rounded-2xl flex items-center justify-center text-3xl">🌟</div>
+            <!-- Sidebar: Stats Cards (4 Columns) -->
+            <aside class="lg:col-span-4 flex flex-col gap-6">
+                <div class="furni-card !rounded-[2rem] p-8">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-[#f2f4f7] text-[#667085] rounded-2xl flex items-center justify-center text-xl">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                        </div>
                         <div>
-                            <p class="opacity-70 text-sm">My Wishes</p>
-                            <p class="text-5xl font-bold mt-1" id="stat-wishes">0</p>
+                            <p class="text-[#667085] text-xs font-semibold uppercase tracking-wider">My Wishes</p>
+                            <p class="text-4xl font-bold text-[#1a1a1a] mt-1" id="stat-wishes">0</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="furni-card p-8">
-                    <div class="flex items-center gap-4">
-                        <div class="w-14 h-14 bg-accent-muted rounded-2xl flex items-center justify-center text-3xl">🤲</div>
+                <div class="furni-card !rounded-[2rem] p-8">
+                    <div class="flex items-center gap-5">
+                        <div class="w-14 h-14 bg-[#f2f4f7] text-[#667085] rounded-2xl flex items-center justify-center text-xl">
+                            <i class="fas fa-hand-holding-heart"></i>
+                        </div>
                         <div>
-                            <p class="opacity-70 text-sm">Wishes Granted</p>
-                            <p class="text-5xl font-bold mt-1" id="stat-granted">0</p>
+                            <p class="text-[#667085] text-xs font-semibold uppercase tracking-wider">Impact Made</p>
+                            <p class="text-4xl font-bold text-[#1a1a1a] mt-1" id="stat-granted">0</p>
                         </div>
                     </div>
                 </div>
-            </div>
+            </aside>
 
-            <!-- My Wishes -->
-            <div class="lg:col-span-8">
-                <div class="furni-card overflow-hidden">
+            <!-- Main Content: Allowance + Wishes + History (8 Columns) -->
+            <div class="lg:col-span-8 flex flex-col gap-8">
+                
+                <!-- Weekly Allowance Display -->
+                <div id="weekly-allowance-display" class="p-5 bg-[#f9fafb] border border-[#f0f0f0] rounded-2xl hidden">
+                    <!-- Progress bar injected by wishes.js -->
+                </div>
+
+                <!-- My Wishes Section -->
+                <section class="furni-card overflow-hidden">
                     <div class="px-8 py-6 border-b border-[var(--card-border)] flex justify-between items-center">
                         <h2 class="font-semibold text-xl">My Active Wishes</h2>
                         <span class="text-sm opacity-60" id="wish-count">0 wishes</span>
                     </div>
-                    
                     <div id="my-wishes-container" class="p-6 space-y-6">
                         <!-- Populated by wishes.js -->
                     </div>
-                </div>
+                </section>
 
-                <!-- Transaction / Granted History -->
-                <div class="mt-8 furni-card overflow-hidden">
+                <!-- Transaction / Granted History Section -->
+                <section class="furni-card overflow-hidden">
                     <div class="px-8 py-6 border-b border-[var(--card-border)]">
                         <h2 class="font-semibold text-xl">Kindness Given</h2>
                     </div>
@@ -92,23 +150,71 @@
                             <p>No grants yet. Start spreading kindness!</p>
                         </div>
                     </div>
-                </div>
+                </section>
+
             </div>
         </div>
     </main>
 
-    <!-- Scripts -->
+    <footer class="bg-[var(--card-bg)] border-t border-[var(--card-border)] py-12 mt-12 text-inherit transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 text-center opacity-60 text-sm">
+            © <span id="current-year"></span> WISH • For customer care: <a href="mailto:team.wishapp@gmail.com" class="underline">team.wishapp@gmail.com</a>
+        </div>
+    </footer>
+
+
+    <script type="module" src="./js/utils.js"></script>
+    <script type="module" src="./js/auth.js"></script>
+    <script type="module" src="./js/wishes.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
-    <script type="module" src="js/utils.js"></script>
-    <script type="module" src="js/auth.js"></script>
-    <script type="module" src="js/wishes.js"></script>
     <script type="module">
-        import { triggerConfetti } from './js/utils.js';
+        import { triggerConfetti, apiRequest } from './js/utils.js';
+        import { fetchMyWishes, fetchMyGrants } from './js/wishes.js';
+        import { API_CONFIG, ENDPOINTS } from './js/constants.js';
+
+        // Setup Real-time Auto-Refresh
+        const setupRealtimeUpdates = () => {
+            const API_BASE_URL = location.hostname === "localhost" || location.hostname === "127.0.0.1" 
+                ? API_CONFIG.BASE_URL 
+                : API_CONFIG.PROD_BASE_URL;
+
+            const eventSource = new EventSource(`${API_BASE_URL}${ENDPOINTS.EVENTS}`);
+            
+            eventSource.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'REFRESH_DATA') {
+                    console.log('🔄 Server signal received: Refreshing dashboard...');
+                    fetchMyWishes();
+                    fetchMyGrants();
+                }
+            };
+
+            eventSource.onerror = () => eventSource.close();
+        };
+
         // Check if returning from a successful Paystack payment
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
+            setupRealtimeUpdates();
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.has('trxref') || urlParams.has('reference')) {
-                triggerConfetti();
+            const reference = urlParams.get('reference') || urlParams.get('trxref');
+            
+            if (reference) {
+                try {
+                    // SECURE: Always verify reference with backend
+                    const data = await apiRequest(`${ENDPOINTS.PAYMENTS_VERIFY}/${reference}`);
+                    if (data.status === 'success') {
+                        triggerConfetti();
+                        // Import showAlert from utils if needed, or use a custom one. 
+                        // Since this is a module script, we can import it.
+                    }
+                } catch (error) {
+                    console.error("Payment verification failed:", error);
+                } finally {
+                    // Clean up URL to prevent multiple triggers on refresh
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    fetchMyWishes();
+                    fetchMyGrants();
+                }
             }
         });
     </script>

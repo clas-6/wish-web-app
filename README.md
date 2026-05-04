@@ -23,11 +23,22 @@ A minimalist, quiet, and semi-anonymous platform designed to facilitate the requ
 
 ## 📂 Project Structure
 ```text
-wish-web-app/
-├── frontend/             # Vanilla JS Frontend
-│   └── public/           # Static assets, HTML, CSS, JS
-├── backend/              # FastAPI Backend
-└── README.md
+project-root/
+├── frontend/                 # Client-side application
+│   ├── public/               # Images, fonts, and favicon
+│   ├── js/                   # Modular ES6 scripts (auth.js, wishes.js, etc.)
+│   ├── styles/               # CSS and theme variables
+│   └── pages/                # HTML files (index.html, dashboard.html, etc.)
+├── backend/                  # FastAPI Server
+│   ├── app/
+│   │   ├── routes/           # API endpoints (Wishes, Auth, Payments)
+│   │   ├── services/         # Business logic (Paystack & VTU integration)
+│   │   ├── models/           # Database schemas (PostgreSQL tables)
+│   │   ├── schemas/          # Pydantic models for data validation
+│   │   └── main.py           # Application entry point
+│   ├── .env                  # Secrets (Paystack Keys, Database URL)
+│   └── requirements.txt      # Python dependencies
+└── README.md                 # Project documentation
 ```
 
 ## 🛠️ Setup & Installation
@@ -39,16 +50,16 @@ cd wish-platform
 ```
 
 ### 2. Configure API Endpoint
-Ensure the `API_CONFIG.BASE_URL` in `public/js/constants.js` points to your partner's Django API (default is `http://localhost:8000/api`).
+Ensure the `API_CONFIG.BASE_URL` in `frontend/public/js/constants.js` points to your partner's FastAPI API (default is `http://localhost:8000/api`).
 
-### 3. Backend Setup (Django)
-Your partner should set up the Django REST Framework project. Ensure `django-cors-headers` is configured to allow requests from your frontend's local address.
+### 3. Backend Setup (FastAPI)
+Your partner should set up the FastAPI project in the `backend/` directory. Ensure `CORSMiddleware` is configured to allow requests from your frontend's local address.
 
 ### 4. Local Development
 Use a local static file server to run the frontend:
 *   **VS Code**: Use the "Live Server" extension.
-*   **Node.js**: Run `npx http-server public`.
-*   **Python**: Run `python -m http.server` inside the `public` folder.
+*   **Node.js**: Run `npx http-server frontend/public`.
+*   **Python**: Run `python -m http.server` inside the `frontend/public` folder.
 
 ## 📁 Project Structure
   - `/js`: Modular ES6 scripts (Auth, Wishes, Payments, Utils).

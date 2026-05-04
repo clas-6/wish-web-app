@@ -1,4 +1,4 @@
-import { API_CONFIG, STORAGE_KEYS, UI_CONFIG, THEME_CONFIG, OCCASION_CONFIG, ERROR_MESSAGES } from './constants.js';
+import { API_CONFIG, STORAGE_KEYS, UI_CONFIG, THEME_CONFIG, OCCASION_CONFIG, ERROR_MESSAGES, TOAST_TYPES } from './constants.js';
 
 const API_BASE_URL = location.hostname === "localhost" || location.hostname === "127.0.0.1" 
     ? API_CONFIG.BASE_URL 
@@ -6,13 +6,15 @@ const API_BASE_URL = location.hostname === "localhost" || location.hostname === 
 
 // Centralized logout logic
 export const logoutUser = () => {
-    localStorage.removeItem(STORAGE_KEYS.TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER_EMAIL);
+    // Clear all app-related storage
+    Object.values(STORAGE_KEYS).forEach(key => {
+        localStorage.removeItem(key);
+    });
     window.location.href = 'index.html';
 };
 
 // Helper for API requests
-export const apiRequest = async (endpoint, options = {}) => {
+export const apiRequest = async (endpoint, options = {}, retryCount = 0) => {
     const token = localStorage.getItem(STORAGE_KEYS.TOKEN); // For JWT Auth
     const headers = {
         'Content-Type': 'application/json',
@@ -46,6 +48,13 @@ export const apiRequest = async (endpoint, options = {}) => {
                 throw new Error("Session expired. Please log in again.");
             }
             
+            // Handle Server Errors with Retry
+            if (response.status >= 500 && retryCount < API_CONFIG.RETRY_ATTEMPTS) {
+                console.warn(`⚠️ Server error ${response.status}. Retrying (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})...`);
+                await new Promise(resolve => setTimeout(resolve, API_CONFIG.RETRY_DELAY));
+                return apiRequest(endpoint, options, retryCount + 1);
+            }
+
             // FastAPI usually returns errors in a 'detail' field. 
             // Sometimes 'detail' is an array of validation errors.
             const errorMessage = Array.isArray(data?.detail) 
@@ -56,6 +65,15 @@ export const apiRequest = async (endpoint, options = {}) => {
         }
         return data;
     } catch (error) {
+        // Handle Network Errors with Retry
+        if (error.message === 'Failed to fetch' || error.name === 'AbortError') {
+            if (retryCount < API_CONFIG.RETRY_ATTEMPTS) {
+                console.warn(`⚠️ Network error: ${error.message}. Retrying (${retryCount + 1}/${API_CONFIG.RETRY_ATTEMPTS})...`);
+                await new Promise(resolve => setTimeout(resolve, API_CONFIG.RETRY_DELAY));
+                return apiRequest(endpoint, options, retryCount + 1);
+            }
+        }
+
         if (error.name === 'AbortError') {
             throw new Error("Request timed out. The server is taking too long to respond.");
         }
@@ -85,6 +103,14 @@ export const toggleLoading = (button, isLoading, text = "Loading...") => {
     }
 };
 
+// Sanitize string to prevent XSS
+export const sanitize = (str) => {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+};
+
 export const showAlert = (message, type = 'info') => {
     const container = document.getElementById('toast-container') || createToastContainer();
     const toast = document.createElement('div');
@@ -97,10 +123,12 @@ export const showAlert = (message, type = 'info') => {
                  'fa-info-circle';
 
     toast.className = `flex items-center gap-3 p-4 rounded-2xl border backdrop-blur-xl shadow-2xl animate-slide-in-right ${bgClass} text-inherit min-w-[300px] pointer-events-auto`;
-    toast.innerHTML = `
-        <i class="fas ${icon} text-lg ${type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-blue-400'}"></i>
-        <p class="text-sm font-medium">${message}</p>
-    `;
+    
+    // Safety: Use a div for the message part and set textContent
+    const iconHtml = `<i class="fas ${icon} text-lg ${type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-blue-400'}"></i>`;
+    const messageHtml = `<p class="text-sm font-medium">${sanitize(message)}</p>`;
+    
+    toast.innerHTML = iconHtml + messageHtml;
 
     container.appendChild(toast);
 
@@ -125,6 +153,14 @@ const createToastContainer = () => {
 
 // ====================== GLOBAL ERROR BOUNDARY ======================
 const initGlobalErrorHandlers = () => {
+    // Inject Font Awesome if missing
+    if (!document.querySelector('link[href*="font-awesome"]')) {
+        const fa = document.createElement('link');
+        fa.rel = 'stylesheet';
+        fa.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css';
+        document.head.appendChild(fa);
+    }
+
     // Catch standard runtime errors (syntax, reference, type errors)
     window.onerror = (message, source, lineno, colno, error) => {
         console.error("Global Error Caught:", { message, source, lineno, colno, error });
@@ -143,11 +179,34 @@ const initGlobalErrorHandlers = () => {
 
 // ====================== THEME MANAGEMENT ======================
 export const initTheme = () => {
-    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) || THEME_CONFIG.DEFAULT;
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    updateThemeIcon(savedTheme);
+    const savedPreference = localStorage.getItem(STORAGE_KEYS.THEME) || THEME_CONFIG.DEFAULT;
+    
+    // Initial application
+    setTheme(savedPreference);
+
+    // Watch for system changes in real-time
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        const currentPref = localStorage.getItem(STORAGE_KEYS.THEME) || THEME_CONFIG.DEFAULT;
+        if (currentPref === THEME_CONFIG.SYSTEM) {
+            document.documentElement.setAttribute('data-theme', e.matches ? THEME_CONFIG.DARK : THEME_CONFIG.LIGHT);
+        }
+    });
+
     applyOccasionTheme();
     initCountdown();
+};
+
+/**
+ * Sets the active theme and saves the preference to localStorage.
+ * @param {string} themeOption 'light', 'dark', or 'system'
+ */
+export const setTheme = (themeOption) => {
+    let effectiveTheme = themeOption;
+    if (themeOption === THEME_CONFIG.SYSTEM) {
+        effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? THEME_CONFIG.DARK : THEME_CONFIG.LIGHT;
+    }
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
+    localStorage.setItem(STORAGE_KEYS.THEME, themeOption);
 };
 
 const initCountdown = () => {
@@ -237,8 +296,13 @@ const applyOccasionTheme = () => {
     }
 
     if (activeOccasion) {
-        document.documentElement.setAttribute('data-occasion', activeOccasion);
-        if (activeOccasion === 'valentine') {
+        // Apply theme if it's a visual occasion
+        if (OCCASION_CONFIG[activeOccasion] && OCCASION_CONFIG[activeOccasion].visualTheme) {
+            document.documentElement.setAttribute('data-occasion', activeOccasion);
+        }
+        // Start specific visual effects
+        // Check if visualTheme is explicitly true for valentine
+        if (activeOccasion === 'valentine' && OCCASION_CONFIG.VALENTINE.visualTheme) {
             startValentineHearts();
         }
     }
@@ -260,15 +324,8 @@ const startValentineHearts = () => {
 export const toggleTheme = () => {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === THEME_CONFIG.DARK ? THEME_CONFIG.LIGHT : THEME_CONFIG.DARK;
-    document.documentElement.setAttribute('data-theme', newTheme);
+    setTheme(newTheme);
     localStorage.setItem(STORAGE_KEYS.THEME, newTheme);
-    updateThemeIcon(newTheme);
-};
-
-const updateThemeIcon = (theme) => {
-    const icon = document.querySelector('#theme-toggle i');
-    if (!icon) return;
-    icon.className = theme === THEME_CONFIG.DARK ? 'fas fa-sun' : 'fas fa-moon';
 };
 
 export const triggerConfetti = () => {
@@ -302,4 +359,7 @@ window.triggerConfetti = triggerConfetti;
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initGlobalErrorHandlers();
+    const yearEl = document.getElementById('current-year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+    highlightActiveNavLink(); // Call the new function to highlight the active link
 });

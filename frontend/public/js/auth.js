@@ -1,5 +1,5 @@
-import { apiRequest, showAlert, toggleLoading, toggleTheme, isAuthenticated, logoutUser, initTheme } from './utils.js';
-import { ENDPOINTS, STORAGE_KEYS, SUCCESS_MESSAGES, THEME_CONFIG, PASSWORD_STRENGTH, ERROR_MESSAGES } from './constants.js';
+import { apiRequest, showAlert, toggleLoading, isAuthenticated, logoutUser } from './utils.js';
+import { ENDPOINTS, STORAGE_KEYS, SUCCESS_MESSAGES, PASSWORD_STRENGTH, ERROR_MESSAGES, UI_CONFIG } from './constants.js';
 
 // Helper to toggle password visibility
 const setupPasswordToggle = (inputId, toggleId) => {
@@ -93,10 +93,11 @@ if (loginForm) {
             toggleLoading(btn, true, 'Logging in...');
             const data = await apiRequest(ENDPOINTS.TOKEN, {
                 method: 'POST',
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ username: email, password })
             });
             
-            localStorage.setItem(STORAGE_KEYS.TOKEN, data.access);
+            localStorage.setItem(STORAGE_KEYS.TOKEN, data.access_token);
+            localStorage.setItem(STORAGE_KEYS.USER_ID, data.user_id);
             localStorage.setItem(STORAGE_KEYS.USER_EMAIL, email);
             
             window.location.href = 'dashboard.html';
@@ -150,29 +151,57 @@ const handleLogout = () => logoutUser();
 // UI Auth State Sync
 const syncAuthState = () => {
     const userEmailEl = document.getElementById('user-email');
-    const authLinks = document.getElementById('auth-links');
+    const authBtnContainer = document.querySelector('.auth-buttons-container');
+    const heroBtn = document.getElementById('hero-get-started');
     const loggedIn = isAuthenticated();
-    const currentTheme = document.documentElement.getAttribute('data-theme') || THEME_CONFIG.DEFAULT;
     
     if (loggedIn) { // User is logged in
         if (userEmailEl) userEmailEl.innerText = localStorage.getItem(STORAGE_KEYS.USER_EMAIL); // Display email
-        if (authLinks) {
-            const themeIcon = currentTheme === THEME_CONFIG.DARK ? 'fa-sun' : 'fa-moon';
-            
-            authLinks.innerHTML = `
-                <div class="hidden md:flex items-center space-x-8 text-sm mr-4">
-                    <a href="browse.html" class="hover:text-[#FACC15] transition">Browse Wishes</a>
-                    <a href="create-wish.html" class="hover:text-[#FACC15] transition">Post a Wish</a>
-                    <a href="dashboard.html" class="hover:text-[#FACC15] transition">My Impact</a>
+        if (authBtnContainer) {
+            authBtnContainer.innerHTML = `
+                <a href="create-wish.html" class="hidden md:block px-4 py-2 bg-[#FACC15] text-[#1a1a1a] rounded-xl text-xs font-bold hover:bg-[#eab308] transition shadow-md">Post a Wish</a>
+                <div class="relative">
+                    <button id="profile-menu-btn" class="w-10 h-10 flex items-center justify-center rounded-full bg-[#f2f4f7] text-[#667085] hover:bg-[#eaecf0] transition p-2">
+                        <i class="fas fa-user-astronaut"></i>
+                    </button>
+                    <div id="profile-dropdown" class="hidden absolute top-12 right-0 w-48 furni-card !p-2 z-[60] animate-fade-in !bg-[var(--card-bg)] shadow-2xl">
+                        <div class="flex flex-col gap-1">
+                            <a href="dashboard.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition">
+                                <i class="fas fa-user w-5 text-center opacity-70"></i> <span>My Profile</span>
+                            </a>
+                            <a href="dashboard.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition">
+                                <i class="fas fa-star w-5 text-center opacity-70"></i> <span>My Wishes</span>
+                            </a>
+                            <a href="transactions.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition">
+                                <i class="fas fa-list-ul w-5 text-center opacity-70"></i> <span>History</span>
+                            </a>
+                            <a href="settings.html" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition">
+                                <i class="fas fa-cog w-5 text-center opacity-70"></i> <span>Settings</span>
+                            </a>
+                            <button id="logout-btn" class="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition text-red-400">
+                                <i class="fas fa-sign-out-alt w-5 text-center"></i> <span>Log out</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <button id="theme-toggle" class="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:opacity-80 transition">
-                    <i class="fas ${themeIcon}"></i>
-                </button>
-                <a href="dashboard.html" class="text-primary-dark font-semibold">Dashboard</a>
-                <button id="logout-btn" class="text-sm hover:text-[#FACC15] transition">Log out</button>
             `;
         }
-    } 
+        if (heroBtn) {
+            heroBtn.innerText = 'Make a Wish';
+            heroBtn.href = 'create-wish.html';
+        }
+    } else {
+        if (heroBtn) {
+            heroBtn.innerText = 'Get Started';
+            heroBtn.href = 'register.html';
+        }
+        if (authBtnContainer) {
+            authBtnContainer.innerHTML = `
+                <a href="login.html" class="hidden xs:block text-sm text-[#667085] hover:text-[#1a1a1a] transition">Login</a>
+                <a href="register.html" class="px-4 py-2 bg-[#FACC15] text-[#1a1a1a] font-semibold rounded-xl text-xs sm:text-sm hover:bg-[#eab308] transition">Get Started</a>
+            `;
+        }
+    }
 
     // Conditional Redirection Logic (Protected Routes)
     const path = window.location.pathname.split('/').pop();
@@ -194,8 +223,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Global UI Listeners (Using Event Delegation for dynamic elements)
     document.body.addEventListener('click', (e) => {
-        if (e.target.closest('#theme-toggle')) toggleTheme();
-        if (e.target.closest('#logout-btn')) handleLogout();
+        // Profile Menu Toggle and Logout
+        const profileMenuBtn = e.target.closest('#profile-menu-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        const logoutBtn = e.target.closest('#logout-btn');
+        
+        // Mobile Menu Toggle
+        const mobileMenuBtn = e.target.closest('#mobile-menu-btn');
+        const mobileDropdown = document.getElementById('mobile-dropdown');
+        
+        if (mobileMenuBtn && mobileDropdown) {
+            mobileDropdown.classList.toggle(UI_CONFIG.MOBILE_MENU_CLOSED_CLASS);
+            mobileDropdown.classList.toggle(UI_CONFIG.MOBILE_MENU_OPEN_CLASS);
+        } else if (mobileDropdown && !e.target.closest('#mobile-dropdown') && !mobileDropdown.classList.contains(UI_CONFIG.MOBILE_MENU_CLOSED_CLASS)) {
+            mobileDropdown.classList.add(UI_CONFIG.MOBILE_MENU_CLOSED_CLASS);
+            mobileDropdown.classList.remove(UI_CONFIG.MOBILE_MENU_OPEN_CLASS);
+        }
+
+        if (profileMenuBtn && profileDropdown) {
+            profileDropdown.classList.toggle('hidden');
+        } else if (profileDropdown && !e.target.closest('#profile-dropdown')) { // Clicked outside
+            profileDropdown.classList.add('hidden');
+        } else if (logoutBtn) { // Clicked logout button inside dropdown
+            handleLogout();
+        }
     });
 
     // 3. Form-specific Helpers
